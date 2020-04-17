@@ -1,8 +1,7 @@
-import { mergeResolvers } from 'merge-graphql-schemas'
+import { mergeResolvers } from "merge-graphql-schemas";
 
-import completedReport from './completedReport'
-import varianceReport from './varianceReport'
+import report from "./completedReport";
 
-const resolvers: any[] = [completedReport, varianceReport]
+const resolvers: any[] = [report];
 
-export default mergeResolvers(resolvers)
+export default mergeResolvers(resolvers);

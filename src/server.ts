@@ -1,0 +1,26 @@
+import { ApolloServer } from "apollo-server";
+
+import { resolvers, typeDefs } from "./grapgql";
+import {
+  fetchEpodServer,
+  completeReportShipment,
+  varianceReportShipment,
+} from "./helper";
+
+const startServer = async () => {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: {
+      fetch: fetchEpodServer,
+      completeReportShipment,
+      varianceReportShipment,
+    },
+  });
+
+  server.listen(5000, () => {
+    console.log(`🚀  Server ready at http:  //localhost:5000/`);
+  });
+};
+
+startServer();
