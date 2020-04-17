@@ -1,8 +1,20 @@
-const completedReportResolvers = {
+const reportResolver = {
   Query: {
-    allCompletedReport: async (parent, args, context, info) => {},
-    completedReport: async (parent, args, context, info) => {},
-  },
-}
+    allShipmentReport: async (parent, args, context, info) => {
+      const { fetch } = context;
+      console.log(fetch);
+    },
 
-export default completedReportResolvers
+    shipmentReport: async (parent, args, context, info) => {},
+
+    vendorReport: async (parent, args, context, info) => {},
+
+    allVendorReport: async (parent, args, context, info) => {},
+
+    customerReport: async (parent, args, context, info) => {},
+
+    allCustomerReport: async (parent, args, context, info) => {},
+  },
+};
+
+export default reportResolver;

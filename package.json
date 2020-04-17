@@ -28,7 +28,7 @@
     "merge-graphql-schemas": "^1.7.7"
   },
   "scripts": {
-    "start": "node -r ts-node/register ./src/index.ts",
+    "start": "node -r ts-node/register ./src/server.ts",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
