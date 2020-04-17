@@ -51,20 +51,12 @@ const reportResolver = {
       });
       const deliveries: any = fetchData.allDeliverys;
 
-      const shipmentNumber: Array<{
-        shipment: String;
-        delivery: String;
-        status: String;
-      }> = [];
+      const shipmentNumber: Array<String> = [];
       const map = new Map();
       for (const item of deliveries) {
         if (!map.has(item.shipmentNumber)) {
           map.set(item.shipmentNumber, true);
-          shipmentNumber.push({
-            shipment: item.shipmentNumber,
-            delivery: item.id,
-            status: item.delvStatus,
-          });
+          shipmentNumber.push(item.shipmentNumber);
         }
       }
       console.log(shipmentNumber);
