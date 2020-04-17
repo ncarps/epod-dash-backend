@@ -73,7 +73,71 @@ const reportResolver = {
       });
     },
 
-    shipmentReport: async (parent, args, context, info) => {},
+    shipmentReport: async (parent, { shipmentNo }, context, info) => {
+      const { fetch, completeReportShipment, varianceReportShipment } = context;
+
+      const fetchData: any = await fetch({
+        query: `query{
+                allDeliverys{
+                  id
+                  scheduledDate
+                  scheduledTime
+                  delvStatus
+                  driver{
+                    id
+                    name
+                    plateNumber
+                  }
+                  items{
+                    id
+                    itemNumber
+                    material
+                    pricePerUnit
+                    uom
+                    qty
+                    varianceQty
+                    pricePerUnit
+                  }
+                  customer{
+                    id
+                    name
+                    address{
+                      id
+                      building_name
+                      street
+                      city
+                      state
+                      street
+                      zip_code
+                    }
+                  }
+                  shipmentNumber
+                  file{
+                     id
+                    path
+                  }
+                }
+              }`,
+        variables: {},
+      }).then((res: any) => {
+        return res.data;
+      });
+      const deliveries: any = fetchData.allDeliverys;
+
+      const shipmentNumber: Array<String> = [];
+      shipmentNumber.push(shipmentNo);
+      const completeReport = completeReportShipment(shipmentNumber, deliveries);
+      console.log(completeReport);
+      const varianceReport = varianceReportShipment(shipmentNumber, deliveries);
+
+      return completeReport.map((r: any) => {
+        return {
+          shipment: r.shipment,
+          completeReport: { completed: r.completed, pending: r.pending },
+          varianceReport: [],
+        };
+      })[0];
+    },
 
     vendorReport: async (parent, args, context, info) => {},
 
