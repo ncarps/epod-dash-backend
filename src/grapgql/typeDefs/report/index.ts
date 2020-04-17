@@ -5,22 +5,28 @@ const reportTypeDef = gql`
     completed: String
     pending: String
   }
+
+  type VarianceReport {
+    delivery: String
+    variance: String
+  }
+
   type Shipment {
     shipment: String
-    variance: String
-    completed: CompleteReport
+    varianceReport: [VarianceReport]
+    completeReport: CompleteReport
   }
 
   type Vendor {
     vendor: String
-    variance: String
-    completed: CompleteReport
+    varianceReport: [VarianceReport]
+    completeReport: CompleteReport
   }
 
   type Customer {
     customer: String
-    variance: String
-    completed: CompleteReport
+    varianceReport: [VarianceReport]
+    completeReport: CompleteReport
   }
 
   type Query {
