@@ -61,9 +61,62 @@ const reportResolver = {
 
     allVendorReport: async (parent, args, context, info) => {},
 
-    customerReport: async (parent, args, context, info) => {},
+    customerReport: async (parent, { customer }, context, info) => {
+      const {
+        completeReportCustomer,
+        varianceReportCustomer,
+        fetchDelivery,
+      } = context;
 
-    allCustomerReport: async (parent, args, context, info) => {},
+      const fetchData: any = await fetchDelivery();
+      const deliveries: any = fetchData.allDeliverys;
+
+      const cust: any = [];
+      cust.push(customer);
+      const completeReport = completeReportCustomer(cust, deliveries);
+      console.log(completeReport, "completeReport");
+      const varianceReport = varianceReportCustomer(cust, deliveries);
+
+      return completeReport.map((r: any, index) => {
+        return {
+          customer: r.cust,
+          completeReport: { completed: r.completed, pending: r.pending },
+          varianceReport: varianceReport[index],
+        };
+      })[0];
+    },
+
+    allCustomerReport: async (parent, args, context, info) => {
+      const {
+        completeReportCustomer,
+        varianceReportCustomer,
+        fetchDelivery,
+      } = context;
+
+      const fetchData: any = await fetchDelivery();
+      const deliveries: any = fetchData.allDeliverys;
+
+      const customer: any = [];
+      const map = new Map();
+      for (const item of deliveries) {
+        if (!map.has(item.customer.name)) {
+          map.set(item.customer.name, true);
+          customer.push(item.customer.name);
+        }
+      }
+      console.log(customer);
+      const completeReport = completeReportCustomer(customer, deliveries);
+      console.log(completeReport);
+      const varianceReport = varianceReportCustomer(customer, deliveries);
+      console.log(varianceReport);
+      return completeReport.map((r: any, index) => {
+        return {
+          customer: r.customer,
+          completeReport: { completed: r.completed, pending: r.pending },
+          varianceReport: varianceReport[index],
+        };
+      });
+    },
   },
 };
 

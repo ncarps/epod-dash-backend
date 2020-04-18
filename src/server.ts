@@ -5,6 +5,8 @@ import {
   fetchDelivery,
   completeReportShipment,
   varianceReportShipment,
+  completeReportCustomer,
+  varianceReportCustomer,
 } from "./helper";
 
 const startServer = async () => {
@@ -15,6 +17,8 @@ const startServer = async () => {
       fetchDelivery,
       completeReportShipment,
       varianceReportShipment,
+      completeReportCustomer,
+      varianceReportCustomer,
     },
   });
 
