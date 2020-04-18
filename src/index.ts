@@ -7,6 +7,4 @@ const server = new ApolloServer({
   resolvers,
 });
 
-server.listen(5000, () => {
-  console.log(`🚀  Server ready at http:  //localhost:5000/`);
-});
+// You can also easily pass variables for dynamic arguments
