@@ -2,7 +2,7 @@ import { ApolloServer } from "apollo-server";
 
 import { resolvers, typeDefs } from "./grapgql";
 import {
-  fetchEpodServer,
+  fetchDelivery,
   completeReportShipment,
   varianceReportShipment,
 } from "./helper";
@@ -12,7 +12,7 @@ const startServer = async () => {
     typeDefs,
     resolvers,
     context: {
-      fetch: fetchEpodServer,
+      fetchDelivery,
       completeReportShipment,
       varianceReportShipment,
     },

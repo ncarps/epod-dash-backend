@@ -1,54 +1,13 @@
 const reportResolver = {
   Query: {
     allShipmentReport: async (parent, args, context, info) => {
-      const { fetch, completeReportShipment, varianceReportShipment } = context;
+      const {
+        completeReportShipment,
+        varianceReportShipment,
+        fetchDelivery,
+      } = context;
 
-      const fetchData: any = await fetch({
-        query: `query{
-                allDeliverys{
-                  id
-                  scheduledDate
-                  scheduledTime
-                  delvStatus
-                  driver{
-                    id
-                    name
-                    plateNumber
-                  }
-                  items{
-                    id
-                    itemNumber
-                    material
-                    pricePerUnit
-                    uom
-                    qty
-                    varianceQty
-                    pricePerUnit
-                  }
-                  customer{
-                    id
-                    name
-                    address{
-                      id
-                      building_name
-                      street
-                      city
-                      state
-                      street
-                      zip_code
-                    }
-                  }
-                  shipmentNumber
-                  file{
-                     id
-                    path
-                  }
-                }
-              }`,
-        variables: {},
-      }).then((res: any) => {
-        return res.data;
-      });
+      const fetchData: any = await fetchDelivery();
       const deliveries: any = fetchData.allDeliverys;
 
       const shipmentNumber: Array<String> = [];
@@ -63,65 +22,24 @@ const reportResolver = {
       const completeReport = completeReportShipment(shipmentNumber, deliveries);
       console.log(completeReport);
       const varianceReport = varianceReportShipment(shipmentNumber, deliveries);
-
-      return completeReport.map((r: any) => {
+      console.log(varianceReport);
+      return completeReport.map((r: any, index) => {
         return {
           shipment: r.shipment,
           completeReport: { completed: r.completed, pending: r.pending },
-          varianceReport: [],
+          varianceReport: varianceReport[index],
         };
       });
     },
 
     shipmentReport: async (parent, { shipmentNo }, context, info) => {
-      const { fetch, completeReportShipment, varianceReportShipment } = context;
+      const {
+        completeReportShipment,
+        varianceReportShipment,
+        fetchDelivery,
+      } = context;
 
-      const fetchData: any = await fetch({
-        query: `query{
-                allDeliverys{
-                  id
-                  scheduledDate
-                  scheduledTime
-                  delvStatus
-                  driver{
-                    id
-                    name
-                    plateNumber
-                  }
-                  items{
-                    id
-                    itemNumber
-                    material
-                    pricePerUnit
-                    uom
-                    qty
-                    varianceQty
-                    pricePerUnit
-                  }
-                  customer{
-                    id
-                    name
-                    address{
-                      id
-                      building_name
-                      street
-                      city
-                      state
-                      street
-                      zip_code
-                    }
-                  }
-                  shipmentNumber
-                  file{
-                     id
-                    path
-                  }
-                }
-              }`,
-        variables: {},
-      }).then((res: any) => {
-        return res.data;
-      });
+      const fetchData: any = await fetchDelivery();
       const deliveries: any = fetchData.allDeliverys;
 
       const shipmentNumber: Array<String> = [];
@@ -130,11 +48,11 @@ const reportResolver = {
       console.log(completeReport);
       const varianceReport = varianceReportShipment(shipmentNumber, deliveries);
 
-      return completeReport.map((r: any) => {
+      return completeReport.map((r: any, index) => {
         return {
           shipment: r.shipment,
           completeReport: { completed: r.completed, pending: r.pending },
-          varianceReport: [],
+          varianceReport: varianceReport[index],
         };
       })[0];
     },
