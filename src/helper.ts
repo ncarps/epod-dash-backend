@@ -148,6 +148,7 @@ export const fetchDelivery = async () => {
                 qty
                 varianceQty
                 pricePerUnit
+                deliveryDateAndTime
               }
               customer{
                 id
@@ -167,6 +168,7 @@ export const fetchDelivery = async () => {
                  id
                 path
               }
+              trucker
             }
           }`,
     variables: {},

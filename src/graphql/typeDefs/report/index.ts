@@ -29,6 +29,29 @@ const reportTypeDef = gql`
     completeReport: CompleteReport
   }
 
+  type Delivery {
+    deliveryId: String
+    customer: String
+    driver: String
+    file: [String]
+    items: [Item]
+    deliveryStatus: String
+    scheduledDate: String
+    scheduledTime: String
+    trucker: String
+  }
+
+  type Item {
+    itemNumber: String
+    material: String
+    pricePerUnit: String
+    uom: String
+    qty: String
+    varianceQty: String
+    reasonOfVariance: String
+    deliveryDateAndTime: String
+  }
+
   type Query {
     shipmentReport(shipmentNo: String): Shipment
     allShipmentReport: [Shipment]
@@ -36,6 +59,7 @@ const reportTypeDef = gql`
     allVendorReport: [Vendor]
     customerReport(customer: String): Customer
     allCustomerReport: [Customer]
+    allDeliverys: [Delivery]
   }
 `;
 

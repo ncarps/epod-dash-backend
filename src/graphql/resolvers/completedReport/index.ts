@@ -117,6 +117,32 @@ const reportResolver = {
         };
       });
     },
+
+    allDeliverys: async (parent, args, { fetchDelivery }, info) => {
+      const fetchData: any = await fetchDelivery();
+      const deliveries: any = fetchData.allDeliverys;
+
+      return deliveries.map((del) => ({
+        customer: del.customer.name,
+        driver: del.driver.name,
+        file: del.file ? del.file.map((f) => f.path) : null,
+        deliveryId: del.id,
+        items: del.items.map((i) => ({
+          itemNumber: i.itemNumber,
+          material: i.material,
+          pricePerUnit: i.pricePerUnit,
+          uom: i.uom,
+          qty: i.qty,
+          varianceQty: i.varianceQty,
+          reasonOfVariance: i.varianceQty,
+          deliveryDateAndTime: i.deliveryDateAndTime,
+        })),
+        deliveryStatus: del.delvStatus,
+        scheduledDate: del.scheduledDate,
+        scheduledTime: del.scheduledTime,
+        trucker: del.trucker,
+      }));
+    },
   },
 };
 
