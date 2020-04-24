@@ -126,7 +126,7 @@ const reportResolver = {
         customer: del.customer.name,
         driver: del.driver.name,
         file: del.file ? del.file.map((f) => f.path) : null,
-        deliveryId: del.id,
+        id: del.id,
         items: del.items.map((i) => ({
           itemNumber: i.itemNumber,
           material: i.material,
@@ -140,6 +140,7 @@ const reportResolver = {
         deliveryStatus: del.delvStatus,
         scheduledDate: del.scheduledDate,
         scheduledTime: del.scheduledTime,
+        shipmentNumber: del.shipmentNumber,
         trucker: del.trucker,
       }));
     },

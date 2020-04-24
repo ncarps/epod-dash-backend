@@ -30,7 +30,7 @@ const reportTypeDef = gql`
   }
 
   type Delivery {
-    deliveryId: String
+    id: ID
     customer: String
     driver: String
     file: [String]
@@ -38,6 +38,7 @@ const reportTypeDef = gql`
     deliveryStatus: String
     scheduledDate: String
     scheduledTime: String
+    shipmentNumber: String
     trucker: String
   }
 
