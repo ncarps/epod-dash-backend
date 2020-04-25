@@ -4,6 +4,64 @@ export const fetchEpodServer = createApolloFetch({
   uri: "http://localhost:4000/graphql",
 });
 
+export const completeReportVendor = (trucker: any, deliveries: any) => {
+  return trucker.map((t) => {
+    let completeCount = 0;
+    let pendingCount = 0;
+    deliveries
+      .filter((x: any) => x.trucker === t)
+      .map((d: any) => {
+        if (d.delvStatus === "Complete") {
+          completeCount = completeCount + 1;
+        } else {
+          pendingCount = pendingCount + 1;
+        }
+      });
+    return {
+      vendor: t,
+      completed: completeCount,
+      pending: pendingCount,
+    };
+  });
+};
+
+export const varianceReportVendor = (trucker: any, deliveries: any) => {
+  return trucker.map((vendor) => {
+    return deliveries
+      .filter((del: any) => del.trucker === vendor)
+      .filter((del: any) => del.delvStatus === "Complete")
+      .map((del: any) => {
+        let variance = 0;
+        del.items.map((item: any) => {
+          const convertVariance = (variance: number, qty: number) => {
+            console.log(variance);
+
+            if (variance < 0) {
+              return variance * -1;
+            }
+            if (variance > 0) {
+              return variance * -1;
+            }
+
+            return variance;
+          };
+          const qty = item.qty;
+          const varianceQty = convertVariance(item.varianceQty, item.qty) || 0;
+          const newVariance = (varianceQty / qty) * 100;
+
+          variance = variance + newVariance;
+        });
+        console.log(del.items.length);
+        variance = variance != 0 ? variance / del.items.length : 0;
+        return {
+          delivery: del.id,
+          variance: variance,
+          vendor: vendor,
+        };
+      });
+  });
+};
+
 export const completeReportCustomer = (customer: any, deliveries: any) => {
   return customer.map((c) => {
     let completeCount = 0;

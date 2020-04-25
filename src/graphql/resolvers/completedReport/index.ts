@@ -57,9 +57,62 @@ const reportResolver = {
       })[0];
     },
 
-    vendorReport: async (parent, args, context, info) => {},
+    vendorReport: async (parent, { vendor }, context, info) => {
+      const {
+        completeReportVendor,
+        varianceReportVendor,
+        fetchDelivery,
+      } = context;
 
-    allVendorReport: async (parent, args, context, info) => {},
+      const fetchData: any = await fetchDelivery();
+      const deliveries: any = fetchData.allDeliverys;
+
+      const trucker: any = [];
+      trucker.push(vendor);
+      const completeReport = completeReportVendor(trucker, deliveries);
+      console.log(completeReport);
+      const varianceReport = varianceReportVendor(trucker, deliveries);
+
+      return completeReport.map((r: any, index) => {
+        return {
+          vendor: r.vendor,
+          completeReport: { completed: r.completed, pending: r.pending },
+          varianceReport: varianceReport[index],
+        };
+      })[0];
+    },
+
+    allVendorReport: async (parent, args, context, info) => {
+      const {
+        completeReportVendor,
+        varianceReportVendor,
+        fetchDelivery,
+      } = context;
+
+      const fetchData: any = await fetchDelivery();
+      const deliveries: any = fetchData.allDeliverys;
+
+      const trucker: any = [];
+      const map = new Map();
+      for (const item of deliveries) {
+        if (!map.has(item.trucker)) {
+          map.set(item.trucker, true);
+          trucker.push(item.trucker);
+        }
+      }
+      console.log(trucker);
+      const completeReport = completeReportVendor(trucker, deliveries);
+      console.log(completeReport);
+      const varianceReport = varianceReportVendor(trucker, deliveries);
+      console.log(varianceReport);
+      return completeReport.map((r: any, index) => {
+        return {
+          vendor: r.vendor,
+          completeReport: { completed: r.completed, pending: r.pending },
+          varianceReport: varianceReport[index],
+        };
+      });
+    },
 
     customerReport: async (parent, { customer }, context, info) => {
       const {
