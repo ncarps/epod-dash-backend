@@ -34,8 +34,6 @@ export const varianceReportCustomer = (customer: any, deliveries: any) => {
         let variance = 0;
         del.items.map((item: any) => {
           const convertVariance = (variance: number, qty: number) => {
-            console.log(variance);
-
             if (variance < 0) {
               return variance * -1;
             }
@@ -51,12 +49,12 @@ export const varianceReportCustomer = (customer: any, deliveries: any) => {
 
           variance = variance + newVariance;
         });
-        console.log(del.items.length);
+
         variance = variance != 0 ? variance / del.items.length : 0;
         return {
           delivery: del.id,
           variance: variance,
-          customer: customer,
+          id: customer,
         };
       });
   });
@@ -98,8 +96,6 @@ export const varianceReportShipment = (
         let variance = 0;
         del.items.map((item: any) => {
           const convertVariance = (variance: number, qty: number) => {
-            console.log(variance);
-
             if (variance < 0) {
               return variance * -1;
             }
@@ -115,12 +111,12 @@ export const varianceReportShipment = (
 
           variance = variance + newVariance;
         });
-        console.log(del.items.length);
+
         variance = variance != 0 ? variance / del.items.length : 0;
         return {
           delivery: del.id,
           variance: variance,
-          shipment: shipment,
+          id: shipment,
         };
       });
   });
