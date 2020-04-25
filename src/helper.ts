@@ -56,7 +56,7 @@ export const varianceReportVendor = (trucker: any, deliveries: any) => {
         return {
           delivery: del.id,
           variance: variance,
-          vendor: vendor,
+          id: vendor,
         };
       });
   });

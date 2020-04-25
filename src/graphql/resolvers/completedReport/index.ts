@@ -86,8 +86,13 @@ const reportResolver = {
       return completeReport.map((r: any, index) => {
         return {
           vendor: r.vendor,
-          completeReport: { completed: r.completed, pending: r.pending },
+          completeReport: {
+            completed: r.completed,
+            pending: r.pending,
+            id: r.vendor,
+          },
           varianceReport: varianceReport[index],
+          id: r.vendor,
         };
       })[0];
     },
@@ -118,8 +123,13 @@ const reportResolver = {
       return completeReport.map((r: any, index) => {
         return {
           vendor: r.vendor,
-          completeReport: { completed: r.completed, pending: r.pending },
+          completeReport: {
+            completed: r.completed,
+            pending: r.pending,
+            id: r.vendor,
+          },
           varianceReport: varianceReport[index],
+          id: r.vendor,
         };
       });
     },
