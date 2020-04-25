@@ -26,8 +26,13 @@ const reportResolver = {
       return completeReport.map((r: any, index) => {
         return {
           shipment: r.shipment,
-          completeReport: { completed: r.completed, pending: r.pending },
+          completeReport: {
+            completed: r.completed,
+            pending: r.pending,
+            id: r.shipment,
+          },
           varianceReport: varianceReport[index],
+          id: r.shipment,
         };
       });
     },
@@ -51,8 +56,13 @@ const reportResolver = {
       return completeReport.map((r: any, index) => {
         return {
           shipment: r.shipment,
-          completeReport: { completed: r.completed, pending: r.pending },
+          completeReport: {
+            completed: r.completed,
+            pending: r.pending,
+            id: r.shipment,
+          },
           varianceReport: varianceReport[index],
+          id: r.shipment,
         };
       })[0];
     },
@@ -126,15 +136,24 @@ const reportResolver = {
 
       const cust: any = [];
       cust.push(customer);
+      const id = deliveries.filter((x) => {
+        if (x.customer.name == customer) {
+          return x.customer.id;
+        }
+      });
       const completeReport = completeReportCustomer(cust, deliveries);
-      console.log(completeReport, "completeReport");
       const varianceReport = varianceReportCustomer(cust, deliveries);
 
       return completeReport.map((r: any, index) => {
         return {
           customer: r.cust,
-          completeReport: { completed: r.completed, pending: r.pending },
+          completeReport: {
+            completed: r.completed,
+            pending: r.pending,
+            id: r.customer,
+          },
           varianceReport: varianceReport[index],
+          id: id[0].customer.id,
         };
       })[0];
     },
@@ -157,16 +176,27 @@ const reportResolver = {
           customer.push(item.customer.name);
         }
       }
-      console.log(customer);
+      const customerId = (name) => {
+        return deliveries.filter((x) => {
+          if (x.customer.name == name) {
+            return x.customer.id;
+          }
+        });
+      };
       const completeReport = completeReportCustomer(customer, deliveries);
-      console.log(completeReport);
       const varianceReport = varianceReportCustomer(customer, deliveries);
-      console.log(varianceReport);
       return completeReport.map((r: any, index) => {
+        const id = customerId(r.customer)[0].customer.id;
+        console.log(id);
         return {
           customer: r.customer,
-          completeReport: { completed: r.completed, pending: r.pending },
+          completeReport: {
+            completed: r.completed,
+            pending: r.pending,
+            id: r.customer,
+          },
           varianceReport: varianceReport[index],
+          id: id,
         };
       });
     },
@@ -181,6 +211,7 @@ const reportResolver = {
         file: del.file ? del.file.map((f) => f.path) : null,
         id: del.id,
         items: del.items.map((i) => ({
+          id: i.id,
           itemNumber: i.itemNumber,
           material: i.material,
           pricePerUnit: i.pricePerUnit,

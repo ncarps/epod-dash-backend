@@ -2,28 +2,33 @@ import { gql } from "apollo-server";
 
 const reportTypeDef = gql`
   type CompleteReport {
+    id: ID
     completed: String
     pending: String
   }
 
   type VarianceReport {
+    id: ID
     delivery: String
     variance: String
   }
 
   type Shipment {
+    id: ID
     shipment: String
     varianceReport: [VarianceReport]
     completeReport: CompleteReport
   }
 
   type Vendor {
+    id: ID
     vendor: String
     varianceReport: [VarianceReport]
     completeReport: CompleteReport
   }
 
   type Customer {
+    id: ID
     customer: String
     varianceReport: [VarianceReport]
     completeReport: CompleteReport
@@ -43,6 +48,7 @@ const reportTypeDef = gql`
   }
 
   type Item {
+    id: ID
     itemNumber: String
     material: String
     pricePerUnit: String
