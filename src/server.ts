@@ -25,7 +25,7 @@ import {
   varianceReportVendor,
 } from "./helper";
 
-const { authURI } = process.env;
+const { authURI, PORT } = process.env;
 
 const getUser = async (authorizationToken) => {
   const [tokenType, token] = authorizationToken.split(" ");
@@ -274,7 +274,7 @@ class AuthenticatedDirective extends SchemaDirectiveVisitor {
 const startServer = async () => {
   const server = await buildServer();
   const app = express();
-  const port = 5000;
+  const port = PORT || 5000;
   server.applyMiddleware({ app });
 
   app.listen({ port: port }, () =>
