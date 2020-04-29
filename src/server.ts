@@ -30,7 +30,7 @@ const { authURI } = process.env;
 const getUser = async (authorizationToken) => {
   const [tokenType, token] = authorizationToken.split(" ");
   let authGqlClient;
-  console.log("AuthURI", authURI);
+  console.log("AuthURI", authURI, authorizationToken);
 
   if (tokenType) {
     authGqlClient = new ApolloClient({
@@ -42,7 +42,7 @@ const getUser = async (authorizationToken) => {
           Authorization: authorizationToken,
         },
       }),
-      name: "epod-service",
+      name: "epod-dash-service",
       version: "0.0.0",
       defaultOptions: {
         query: {
