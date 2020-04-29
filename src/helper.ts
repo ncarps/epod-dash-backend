@@ -183,55 +183,7 @@ export const varianceReportShipment = (
   });
 };
 
-export const fetchDelivery = async () => {
-  // return await fetchEpodServer({
-  //   query: `query{
-  //           allDeliverys{
-  //             id
-  //             scheduledDate
-  //             scheduledTime
-  //             delvStatus
-  //             driver{
-  //               id
-  //               name
-  //               plateNumber
-  //             }
-  //             items{
-  //               id
-  //               itemNumber
-  //               material
-  //               pricePerUnit
-  //               uom
-  //               qty
-  //               varianceQty
-  //               pricePerUnit
-  //               deliveryDateAndTime
-  //             }
-  //             customer{
-  //               id
-  //               name
-  //               address{
-  //                 id
-  //                 building_name
-  //                 street
-  //                 city
-  //                 state
-  //                 street
-  //                 zip_code
-  //               }
-  //             }
-  //             shipmentNumber
-  //             file{
-  //                id
-  //               path
-  //             }
-  //             trucker
-  //           }
-  //         }`,
-  //   variables: {},
-  // }).then((res: any) => {
-  //   return res.data;
-  // });
+export const fetchDelivery = async (header) => {
   const uri = "http://localhost:4000/graphql";
   const link = new HttpLink({ uri });
   const operation = {
@@ -284,9 +236,9 @@ export const fetchDelivery = async () => {
     context: {
       headers: {
         //Den auth
-        //Authorization: "Basic cXdlcnR5OmFhYQ==",
+        Authorization: header,
         //Mark auth
-        Authorization: "Basic bWFyazoxMjM=",
+        //Authorization: "Basic bWFyazoxMjM=",
       },
     },
   };

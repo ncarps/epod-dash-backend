@@ -7,7 +7,7 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       const shipmentNumber: Array<String> = [];
@@ -19,9 +19,15 @@ const reportResolver = {
         }
       }
       console.log(shipmentNumber);
-      const completeReport = completeReportShipment(shipmentNumber, deliveries);
+      const completeReport = await completeReportShipment(
+        shipmentNumber,
+        deliveries
+      );
       console.log(completeReport);
-      const varianceReport = varianceReportShipment(shipmentNumber, deliveries);
+      const varianceReport = await varianceReportShipment(
+        shipmentNumber,
+        deliveries
+      );
       console.log(varianceReport);
       return completeReport.map((r: any, index) => {
         return {
@@ -44,14 +50,20 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       const shipmentNumber: Array<String> = [];
       shipmentNumber.push(shipmentNo);
-      const completeReport = completeReportShipment(shipmentNumber, deliveries);
+      const completeReport = await completeReportShipment(
+        shipmentNumber,
+        deliveries
+      );
       console.log(completeReport);
-      const varianceReport = varianceReportShipment(shipmentNumber, deliveries);
+      const varianceReport = await varianceReportShipment(
+        shipmentNumber,
+        deliveries
+      );
 
       return completeReport.map((r: any, index) => {
         return {
@@ -74,14 +86,14 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       const trucker: any = [];
       trucker.push(vendor);
-      const completeReport = completeReportVendor(trucker, deliveries);
+      const completeReport = await completeReportVendor(trucker, deliveries);
       console.log(completeReport);
-      const varianceReport = varianceReportVendor(trucker, deliveries);
+      const varianceReport = await varianceReportVendor(trucker, deliveries);
 
       return completeReport.map((r: any, index) => {
         return {
@@ -104,7 +116,7 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       const trucker: any = [];
@@ -141,7 +153,7 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       const cust: any = [];
@@ -175,7 +187,7 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       const customer: any = [];
@@ -193,8 +205,8 @@ const reportResolver = {
           }
         });
       };
-      const completeReport = completeReportCustomer(customer, deliveries);
-      const varianceReport = varianceReportCustomer(customer, deliveries);
+      const completeReport = await completeReportCustomer(customer, deliveries);
+      const varianceReport = await varianceReportCustomer(customer, deliveries);
       return completeReport.map((r: any, index) => {
         const id = customerId(r.customer)[0].customer.id;
         console.log(id);
@@ -212,7 +224,7 @@ const reportResolver = {
     },
 
     allDeliverys: async (parent, args, { fetchDelivery }, info) => {
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       return deliveries.map((del) => ({
@@ -237,6 +249,23 @@ const reportResolver = {
         shipmentNumber: del.shipmentNumber,
         trucker: del.trucker,
       }));
+    },
+    loginAuth: async (parent, { userBase }, context, info) => {
+      //      console.log(userBase);
+      //      if (userBase === "TU5hYmFibGl0OjEyMw==") {
+      //        return { success: true, message: "Logged In" };
+      //      }
+      //
+      //      return { success: false, message: "Wrong Credentials" };
+      //    }
+
+      //should not throw?, for login in client purposes? find a workaround
+
+      const { user } = context;
+      if (user.id && user.username) {
+        return { success: true, message: "Authenticated." };
+      }
+      return { success: false, message: "Invalid Credentials." };
     },
   },
 };
