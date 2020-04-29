@@ -19,9 +19,15 @@ const reportResolver = {
         }
       }
       console.log(shipmentNumber);
-      const completeReport = completeReportShipment(shipmentNumber, deliveries);
+      const completeReport = await completeReportShipment(
+        shipmentNumber,
+        deliveries
+      );
       console.log(completeReport);
-      const varianceReport = varianceReportShipment(shipmentNumber, deliveries);
+      const varianceReport = await varianceReportShipment(
+        shipmentNumber,
+        deliveries
+      );
       console.log(varianceReport);
       return completeReport.map((r: any, index) => {
         return {
@@ -49,9 +55,15 @@ const reportResolver = {
 
       const shipmentNumber: Array<String> = [];
       shipmentNumber.push(shipmentNo);
-      const completeReport = completeReportShipment(shipmentNumber, deliveries);
+      const completeReport = await completeReportShipment(
+        shipmentNumber,
+        deliveries
+      );
       console.log(completeReport);
-      const varianceReport = varianceReportShipment(shipmentNumber, deliveries);
+      const varianceReport = await varianceReportShipment(
+        shipmentNumber,
+        deliveries
+      );
 
       return completeReport.map((r: any, index) => {
         return {
@@ -79,9 +91,9 @@ const reportResolver = {
 
       const trucker: any = [];
       trucker.push(vendor);
-      const completeReport = completeReportVendor(trucker, deliveries);
+      const completeReport = await completeReportVendor(trucker, deliveries);
       console.log(completeReport);
-      const varianceReport = varianceReportVendor(trucker, deliveries);
+      const varianceReport = await varianceReportVendor(trucker, deliveries);
 
       return completeReport.map((r: any, index) => {
         return {
@@ -193,8 +205,8 @@ const reportResolver = {
           }
         });
       };
-      const completeReport = completeReportCustomer(customer, deliveries);
-      const varianceReport = varianceReportCustomer(customer, deliveries);
+      const completeReport = await completeReportCustomer(customer, deliveries);
+      const varianceReport = await varianceReportCustomer(customer, deliveries);
       return completeReport.map((r: any, index) => {
         const id = customerId(r.customer)[0].customer.id;
         console.log(id);
