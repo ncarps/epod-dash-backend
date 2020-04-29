@@ -1,29 +1,34 @@
-import { ApolloServer } from "apollo-server";
+import {ApolloServer} from 'apollo-server';
 
-import { resolvers, typeDefs } from "./graphql";
+import {resolvers, typeDefs} from './graphql';
 import {
-  fetchDelivery,
+  makeFetchDelivery,
   completeReportShipment,
   varianceReportShipment,
   completeReportCustomer,
   varianceReportCustomer,
   completeReportVendor,
   varianceReportVendor,
-} from "./helper";
+} from './helper';
 
 const startServer = async () => {
-  const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    context: {
-      fetchDelivery,
+  const context = async session => {
+    const authString = session.req.headers.authorization;
+    return {
+      fetchDelivery: makeFetchDelivery(authString),
       completeReportShipment,
       varianceReportShipment,
       completeReportCustomer,
       varianceReportCustomer,
       completeReportVendor,
       varianceReportVendor,
-    },
+    };
+  };
+
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context,
   });
 
   server.listen(5000, () => {

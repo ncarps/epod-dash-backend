@@ -1,20 +1,20 @@
-const { createApolloFetch } = require("apollo-fetch");
-import { execute, makePromise } from "apollo-link";
-import { HttpLink } from "apollo-link-http";
-import gql from "graphql-tag";
+const {createApolloFetch} = require('apollo-fetch');
+import {execute, makePromise} from 'apollo-link';
+import {HttpLink} from 'apollo-link-http';
+import gql from 'graphql-tag';
 
 export const fetchEpodServer = createApolloFetch({
-  uri: "http://localhost:4000/graphql",
+  uri: 'http://localhost:4004/graphql',
 });
 
 export const completeReportVendor = (trucker: any, deliveries: any) => {
-  return trucker.map((t) => {
+  return trucker.map(t => {
     let completeCount = 0;
     let pendingCount = 0;
     deliveries
       .filter((x: any) => x.trucker === t)
       .map((d: any) => {
-        if (d.delvStatus === "Complete") {
+        if (d.delvStatus === 'Complete') {
           completeCount = completeCount + 1;
         } else {
           pendingCount = pendingCount + 1;
@@ -29,10 +29,10 @@ export const completeReportVendor = (trucker: any, deliveries: any) => {
 };
 
 export const varianceReportVendor = (trucker: any, deliveries: any) => {
-  return trucker.map((vendor) => {
+  return trucker.map(vendor => {
     return deliveries
       .filter((del: any) => del.trucker === vendor)
-      .filter((del: any) => del.delvStatus === "Complete")
+      .filter((del: any) => del.delvStatus === 'Complete')
       .map((del: any) => {
         let variance = 0;
         del.items.map((item: any) => {
@@ -66,13 +66,13 @@ export const varianceReportVendor = (trucker: any, deliveries: any) => {
 };
 
 export const completeReportCustomer = (customer: any, deliveries: any) => {
-  return customer.map((c) => {
+  return customer.map(c => {
     let completeCount = 0;
     let pendingCount = 0;
     deliveries
       .filter((x: any) => x.customer.name === c)
       .map((d: any) => {
-        if (d.delvStatus === "Complete") {
+        if (d.delvStatus === 'Complete') {
           completeCount = completeCount + 1;
         } else {
           pendingCount = pendingCount + 1;
@@ -87,10 +87,10 @@ export const completeReportCustomer = (customer: any, deliveries: any) => {
 };
 
 export const varianceReportCustomer = (customer: any, deliveries: any) => {
-  return customer.map((customer) => {
+  return customer.map(customer => {
     return deliveries
       .filter((del: any) => del.customer.name === customer)
-      .filter((del: any) => del.delvStatus === "Complete")
+      .filter((del: any) => del.delvStatus === 'Complete')
       .map((del: any) => {
         let variance = 0;
         del.items.map((item: any) => {
@@ -123,15 +123,15 @@ export const varianceReportCustomer = (customer: any, deliveries: any) => {
 
 export const completeReportShipment = (
   shipmentNumber: Array<String>,
-  deliveries: any
+  deliveries: any,
 ) => {
-  return shipmentNumber.map((s) => {
+  return shipmentNumber.map(s => {
     let completeCount = 0;
     let pendingCount = 0;
     deliveries
       .filter((x: any) => x.shipmentNumber === s)
       .map((d: any) => {
-        if (d.delvStatus === "Complete") {
+        if (d.delvStatus === 'Complete') {
           completeCount = completeCount + 1;
         } else {
           pendingCount = pendingCount + 1;
@@ -147,12 +147,12 @@ export const completeReportShipment = (
 
 export const varianceReportShipment = (
   shipmentNumber: Array<String>,
-  deliveries: any
+  deliveries: any,
 ) => {
-  return shipmentNumber.map((shipment) => {
+  return shipmentNumber.map(shipment => {
     return deliveries
       .filter((del: any) => del.shipmentNumber === shipment)
-      .filter((del: any) => del.delvStatus === "Complete")
+      .filter((del: any) => del.delvStatus === 'Complete')
       .map((del: any) => {
         let variance = 0;
         del.items.map((item: any) => {
@@ -183,57 +183,9 @@ export const varianceReportShipment = (
   });
 };
 
-export const fetchDelivery = async () => {
-  // return await fetchEpodServer({
-  //   query: `query{
-  //           allDeliverys{
-  //             id
-  //             scheduledDate
-  //             scheduledTime
-  //             delvStatus
-  //             driver{
-  //               id
-  //               name
-  //               plateNumber
-  //             }
-  //             items{
-  //               id
-  //               itemNumber
-  //               material
-  //               pricePerUnit
-  //               uom
-  //               qty
-  //               varianceQty
-  //               pricePerUnit
-  //               deliveryDateAndTime
-  //             }
-  //             customer{
-  //               id
-  //               name
-  //               address{
-  //                 id
-  //                 building_name
-  //                 street
-  //                 city
-  //                 state
-  //                 street
-  //                 zip_code
-  //               }
-  //             }
-  //             shipmentNumber
-  //             file{
-  //                id
-  //               path
-  //             }
-  //             trucker
-  //           }
-  //         }`,
-  //   variables: {},
-  // }).then((res: any) => {
-  //   return res.data;
-  // });
-  const uri = "http://localhost:4000/graphql";
-  const link = new HttpLink({ uri });
+export const makeFetchDelivery = authString => async () => {
+  const uri = 'http://localhost:4004/graphql';
+  const link = new HttpLink({uri});
   const operation = {
     query: gql`
       query {
@@ -286,13 +238,20 @@ export const fetchDelivery = async () => {
         //Den auth
         //Authorization: "Basic cXdlcnR5OmFhYQ==",
         //Mark auth
-        Authorization: "Basic bWFyazoxMjM=",
+        Authorization: authString,
       },
     },
   };
 
   const result: any = await makePromise(execute(link, operation))
-    .then((data) => data)
-    .catch((error) => error);
-  return result.data || result.error;
+    .then(data => {
+      console.log('data', data);
+      return data;
+    })
+    .catch(error => {
+      console.log('error', error);
+      return error;
+    });
+
+  return result;
 };

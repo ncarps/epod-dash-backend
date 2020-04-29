@@ -1,4 +1,4 @@
-import { gql } from "apollo-server";
+import {gql} from 'apollo-server';
 
 const reportTypeDef = gql`
   type CompleteReport {
@@ -67,6 +67,10 @@ const reportTypeDef = gql`
     customerReport(customer: String): Customer
     allCustomerReport: [Customer]
     allDeliverys: [Delivery]
+  }
+
+  type Mutation {
+    login : String
   }
 `;
 

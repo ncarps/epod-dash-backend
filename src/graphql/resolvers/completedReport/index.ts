@@ -1,4 +1,17 @@
 const reportResolver = {
+  Mutation: {
+    login: async (parent, params, context, info) => {
+      const {fetchDelivery} = context;
+
+      const delivs = await fetchDelivery();
+      console.log('ddds', delivs);
+      if (delivs.errors) {
+        return new Error(delivs.errors[0].message);
+      }
+
+      return true;
+    },
+  },
   Query: {
     allShipmentReport: async (parent, args, context, info) => {
       const {
@@ -7,7 +20,7 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = (await fetchDelivery()).data;
       const deliveries: any = fetchData.allDeliverys;
 
       const shipmentNumber: Array<String> = [];
@@ -37,14 +50,14 @@ const reportResolver = {
       });
     },
 
-    shipmentReport: async (parent, { shipmentNo }, context, info) => {
+    shipmentReport: async (parent, {shipmentNo}, context, info) => {
       const {
         completeReportShipment,
         varianceReportShipment,
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = (await fetchDelivery()).data;
       const deliveries: any = fetchData.allDeliverys;
 
       const shipmentNumber: Array<String> = [];
@@ -67,14 +80,14 @@ const reportResolver = {
       })[0];
     },
 
-    vendorReport: async (parent, { vendor }, context, info) => {
+    vendorReport: async (parent, {vendor}, context, info) => {
       const {
         completeReportVendor,
         varianceReportVendor,
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = (await fetchDelivery()).data;
       const deliveries: any = fetchData.allDeliverys;
 
       const trucker: any = [];
@@ -104,7 +117,7 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = (await fetchDelivery()).data;
       const deliveries: any = fetchData.allDeliverys;
 
       const trucker: any = [];
@@ -134,19 +147,19 @@ const reportResolver = {
       });
     },
 
-    customerReport: async (parent, { customer }, context, info) => {
+    customerReport: async (parent, {customer}, context, info) => {
       const {
         completeReportCustomer,
         varianceReportCustomer,
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = (await fetchDelivery()).data;
       const deliveries: any = fetchData.allDeliverys;
 
       const cust: any = [];
       cust.push(customer);
-      const id = deliveries.filter((x) => {
+      const id = deliveries.filter(x => {
         if (x.customer.name == customer) {
           return x.customer.id;
         }
@@ -175,7 +188,7 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = (await fetchDelivery()).data;
       const deliveries: any = fetchData.allDeliverys;
 
       const customer: any = [];
@@ -186,8 +199,8 @@ const reportResolver = {
           customer.push(item.customer.name);
         }
       }
-      const customerId = (name) => {
-        return deliveries.filter((x) => {
+      const customerId = name => {
+        return deliveries.filter(x => {
           if (x.customer.name == name) {
             return x.customer.id;
           }
@@ -211,16 +224,16 @@ const reportResolver = {
       });
     },
 
-    allDeliverys: async (parent, args, { fetchDelivery }, info) => {
-      const fetchData: any = await fetchDelivery();
+    allDeliverys: async (parent, args, {fetchDelivery}, info) => {
+      const fetchData: any = (await fetchDelivery()).data;
       const deliveries: any = fetchData.allDeliverys;
 
-      return deliveries.map((del) => ({
+      return deliveries.map(del => ({
         customer: del.customer.name,
         driver: del.driver.name,
-        file: del.file ? del.file.map((f) => f.path) : null,
+        file: del.file ? del.file.map(f => f.path) : null,
         id: del.id,
-        items: del.items.map((i) => ({
+        items: del.items.map(i => ({
           id: i.id,
           itemNumber: i.itemNumber,
           material: i.material,
