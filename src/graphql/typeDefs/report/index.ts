@@ -1,6 +1,10 @@
 import { gql } from "apollo-server";
 
 const reportTypeDef = gql`
+  type Message {
+    success: Boolean
+    message: String
+  }
   type CompleteReport {
     id: ID
     completed: String
@@ -67,6 +71,7 @@ const reportTypeDef = gql`
     customerReport(customer: String): Customer
     allCustomerReport: [Customer]
     allDeliverys: [Delivery]
+    loginAuth(userBase: String!): Message
   }
 `;
 

@@ -7,7 +7,7 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       const shipmentNumber: Array<String> = [];
@@ -44,7 +44,7 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       const shipmentNumber: Array<String> = [];
@@ -74,7 +74,7 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       const trucker: any = [];
@@ -104,7 +104,7 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       const trucker: any = [];
@@ -141,7 +141,7 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       const cust: any = [];
@@ -175,7 +175,7 @@ const reportResolver = {
         fetchDelivery,
       } = context;
 
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       const customer: any = [];
@@ -212,7 +212,7 @@ const reportResolver = {
     },
 
     allDeliverys: async (parent, args, { fetchDelivery }, info) => {
-      const fetchData: any = await fetchDelivery();
+      const fetchData: any = await fetchDelivery;
       const deliveries: any = fetchData.allDeliverys;
 
       return deliveries.map((del) => ({
@@ -237,6 +237,23 @@ const reportResolver = {
         shipmentNumber: del.shipmentNumber,
         trucker: del.trucker,
       }));
+    },
+    loginAuth: async (parent, { userBase }, context, info) => {
+      //      console.log(userBase);
+      //      if (userBase === "TU5hYmFibGl0OjEyMw==") {
+      //        return { success: true, message: "Logged In" };
+      //      }
+      //
+      //      return { success: false, message: "Wrong Credentials" };
+      //    }
+
+      //should not throw?, for login in client purposes? find a workaround
+
+      const { user } = context;
+      if (user.id && user.username) {
+        return { success: true, message: "Authenticated." };
+      }
+      return { success: false, message: "Invalid Credentials." };
     },
   },
 };
