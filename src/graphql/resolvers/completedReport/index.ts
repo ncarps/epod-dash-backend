@@ -128,9 +128,9 @@ const reportResolver = {
         }
       }
       console.log(trucker);
-      const completeReport = completeReportVendor(trucker, deliveries);
+      const completeReport = await completeReportVendor(trucker, deliveries);
       console.log(completeReport);
-      const varianceReport = varianceReportVendor(trucker, deliveries);
+      const varianceReport = await varianceReportVendor(trucker, deliveries);
       console.log(varianceReport);
       return completeReport.map((r: any, index) => {
         return {
@@ -163,8 +163,8 @@ const reportResolver = {
           return x.customer.id;
         }
       });
-      const completeReport = completeReportCustomer(cust, deliveries);
-      const varianceReport = varianceReportCustomer(cust, deliveries);
+      const completeReport = await completeReportCustomer(cust, deliveries);
+      const varianceReport = await varianceReportCustomer(cust, deliveries);
 
       return completeReport.map((r: any, index) => {
         return {
