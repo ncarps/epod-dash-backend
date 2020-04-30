@@ -3,6 +3,8 @@ import { execute, makePromise } from "apollo-link";
 import { HttpLink } from "apollo-link-http";
 import gql from "graphql-tag";
 
+require("dotenv").config();
+
 export const fetchEpodServer = createApolloFetch({
   uri: "http://localhost:4000/graphql",
 });
@@ -184,7 +186,8 @@ export const varianceReportShipment = (
 };
 
 export const fetchDelivery = async (header) => {
-  const uri = "http://localhost:4000/graphql";
+  const { epodapiURI } = process.env;
+  const uri = epodapiURI;
   const link = new HttpLink({ uri });
   const operation = {
     query: gql`
