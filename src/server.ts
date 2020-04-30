@@ -25,7 +25,7 @@ import {
   varianceReportVendor,
 } from "./helper";
 
-const { authURI, PORT, EPOD_REPORTS_API_URI } = process.env;
+const { authURI, PORT, EPOD_API_URI } = process.env;
 
 const getUser = async (authorizationToken) => {
   const [tokenType, token] = authorizationToken.split(" ");

@@ -3,10 +3,10 @@ import {execute, makePromise} from 'apollo-link';
 import {HttpLink} from 'apollo-link-http';
 import gql from 'graphql-tag';
 
-const {authURI, PORT, EPOD_REPORTS_API_URI} = process.env;
+const {authURI, PORT, EPOD_API_URI } = process.env;
 
 export const fetchEpodServer = createApolloFetch({
-  uri: EPOD_REPORTS_API_URI || 'http://localhost:4000/graphql',
+  uri: EPOD_API_URI  || 'http://localhost:4000/graphql',
 });
 
 export const completeReportVendor = (trucker: any, deliveries: any) => {
@@ -186,7 +186,7 @@ export const varianceReportShipment = (
 };
 
 export const fetchDelivery = async header => {
-  const uri = EPOD_REPORTS_API_URI || 'http://localhost:4000/graphql';
+  const uri = EPOD_API_URI  || 'http://localhost:4000/graphql';
   const link = new HttpLink({uri});
   const operation = {
     query: gql`
