@@ -1,20 +1,22 @@
-const { createApolloFetch } = require("apollo-fetch");
-import { execute, makePromise } from "apollo-link";
-import { HttpLink } from "apollo-link-http";
-import gql from "graphql-tag";
+const {createApolloFetch} = require('apollo-fetch');
+import {execute, makePromise} from 'apollo-link';
+import {HttpLink} from 'apollo-link-http';
+import gql from 'graphql-tag';
+
+const {authURI, PORT, EPOD_API_URI } = process.env;
 
 export const fetchEpodServer = createApolloFetch({
-  uri: "http://localhost:4000/graphql",
+  uri: EPOD_API_URI  || 'http://localhost:4000/graphql',
 });
 
 export const completeReportVendor = (trucker: any, deliveries: any) => {
-  return trucker.map((t) => {
+  return trucker.map(t => {
     let completeCount = 0;
     let pendingCount = 0;
     deliveries
       .filter((x: any) => x.trucker === t)
       .map((d: any) => {
-        if (d.delvStatus === "Complete") {
+        if (d.delvStatus === 'Complete') {
           completeCount = completeCount + 1;
         } else {
           pendingCount = pendingCount + 1;
@@ -29,10 +31,10 @@ export const completeReportVendor = (trucker: any, deliveries: any) => {
 };
 
 export const varianceReportVendor = (trucker: any, deliveries: any) => {
-  return trucker.map((vendor) => {
+  return trucker.map(vendor => {
     return deliveries
       .filter((del: any) => del.trucker === vendor)
-      .filter((del: any) => del.delvStatus === "Complete")
+      .filter((del: any) => del.delvStatus === 'Complete')
       .map((del: any) => {
         let variance = 0;
         del.items.map((item: any) => {
@@ -66,13 +68,13 @@ export const varianceReportVendor = (trucker: any, deliveries: any) => {
 };
 
 export const completeReportCustomer = (customer: any, deliveries: any) => {
-  return customer.map((c) => {
+  return customer.map(c => {
     let completeCount = 0;
     let pendingCount = 0;
     deliveries
       .filter((x: any) => x.customer.name === c)
       .map((d: any) => {
-        if (d.delvStatus === "Complete") {
+        if (d.delvStatus === 'Complete') {
           completeCount = completeCount + 1;
         } else {
           pendingCount = pendingCount + 1;
@@ -87,10 +89,10 @@ export const completeReportCustomer = (customer: any, deliveries: any) => {
 };
 
 export const varianceReportCustomer = (customer: any, deliveries: any) => {
-  return customer.map((customer) => {
+  return customer.map(customer => {
     return deliveries
       .filter((del: any) => del.customer.name === customer)
-      .filter((del: any) => del.delvStatus === "Complete")
+      .filter((del: any) => del.delvStatus === 'Complete')
       .map((del: any) => {
         let variance = 0;
         del.items.map((item: any) => {
@@ -123,15 +125,15 @@ export const varianceReportCustomer = (customer: any, deliveries: any) => {
 
 export const completeReportShipment = (
   shipmentNumber: Array<String>,
-  deliveries: any
+  deliveries: any,
 ) => {
-  return shipmentNumber.map((s) => {
+  return shipmentNumber.map(s => {
     let completeCount = 0;
     let pendingCount = 0;
     deliveries
       .filter((x: any) => x.shipmentNumber === s)
       .map((d: any) => {
-        if (d.delvStatus === "Complete") {
+        if (d.delvStatus === 'Complete') {
           completeCount = completeCount + 1;
         } else {
           pendingCount = pendingCount + 1;
@@ -147,12 +149,12 @@ export const completeReportShipment = (
 
 export const varianceReportShipment = (
   shipmentNumber: Array<String>,
-  deliveries: any
+  deliveries: any,
 ) => {
-  return shipmentNumber.map((shipment) => {
+  return shipmentNumber.map(shipment => {
     return deliveries
       .filter((del: any) => del.shipmentNumber === shipment)
-      .filter((del: any) => del.delvStatus === "Complete")
+      .filter((del: any) => del.delvStatus === 'Complete')
       .map((del: any) => {
         let variance = 0;
         del.items.map((item: any) => {
@@ -183,9 +185,9 @@ export const varianceReportShipment = (
   });
 };
 
-export const fetchDelivery = async (header) => {
-  const uri = "http://localhost:4000/graphql";
-  const link = new HttpLink({ uri });
+export const fetchDelivery = async header => {
+  const uri = EPOD_API_URI  || 'http://localhost:4000/graphql';
+  const link = new HttpLink({uri});
   const operation = {
     query: gql`
       query {
@@ -244,7 +246,7 @@ export const fetchDelivery = async (header) => {
   };
 
   const result: any = await makePromise(execute(link, operation))
-    .then((data) => data)
-    .catch((error) => error);
+    .then(data => data)
+    .catch(error => error);
   return result.data || result.error;
 };
