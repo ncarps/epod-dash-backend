@@ -1,193 +1,251 @@
-const {createApolloFetch} = require('apollo-fetch');
-import {execute, makePromise} from 'apollo-link';
-import {HttpLink} from 'apollo-link-http';
-import gql from 'graphql-tag';
+const { createApolloFetch } = require('apollo-fetch')
+import { execute, makePromise } from 'apollo-link'
+import { HttpLink } from 'apollo-link-http'
+import gql from 'graphql-tag'
+import moment from 'moment'
+const { authURI, PORT, EPOD_API_URI } = process.env
 
-const {authURI, PORT, EPOD_API_URI } = process.env;
+require('dotenv').config()
 
 export const fetchEpodServer = createApolloFetch({
-  uri: EPOD_API_URI  || 'http://localhost:4000/graphql',
-});
+  uri: EPOD_API_URI || 'http://localhost:4000/graphql',
+})
 
 export const completeReportVendor = (trucker: any, deliveries: any) => {
-  return trucker.map(t => {
-    let completeCount = 0;
-    let pendingCount = 0;
+  return trucker.map((t) => {
+    let completeCount = 0
+    let pendingCount = 0
     deliveries
       .filter((x: any) => x.trucker === t)
       .map((d: any) => {
         if (d.delvStatus === 'Complete') {
-          completeCount = completeCount + 1;
+          completeCount = completeCount + 1
         } else {
-          pendingCount = pendingCount + 1;
+          pendingCount = pendingCount + 1
         }
-      });
+      })
     return {
       vendor: t,
       completed: completeCount,
       pending: pendingCount,
-    };
-  });
-};
+    }
+  })
+}
 
 export const varianceReportVendor = (trucker: any, deliveries: any) => {
-  return trucker.map(vendor => {
+  return trucker.map((vendor) => {
     return deliveries
       .filter((del: any) => del.trucker === vendor)
       .filter((del: any) => del.delvStatus === 'Complete')
       .map((del: any) => {
-        let variance = 0;
+        let variance = 0
         del.items.map((item: any) => {
           const convertVariance = (variance: number, qty: number) => {
-            console.log(variance);
+            console.log(variance)
 
             if (variance < 0) {
-              return variance * -1;
+              return variance * -1
             }
             if (variance > 0) {
-              return variance * -1;
+              return variance * -1
             }
 
-            return variance;
-          };
-          const qty = item.qty;
-          const varianceQty = convertVariance(item.varianceQty, item.qty) || 0;
-          const newVariance = (varianceQty / qty) * 100;
+            return variance
+          }
+          const qty = item.qty
+          const varianceQty = convertVariance(item.varianceQty, item.qty) || 0
+          const newVariance = (varianceQty / qty) * 100
 
-          variance = variance + newVariance;
-        });
-        console.log(del.items.length);
-        variance = variance != 0 ? variance / del.items.length : 0;
+          variance = variance + newVariance
+        })
+        console.log(del.items.length)
+        variance = variance != 0 ? variance / del.items.length : 0
         return {
           delivery: del.id,
           variance: variance,
           id: vendor,
-        };
-      });
-  });
-};
+        }
+      })
+  })
+}
 
 export const completeReportCustomer = (customer: any, deliveries: any) => {
-  return customer.map(c => {
-    let completeCount = 0;
-    let pendingCount = 0;
+  return customer.map((c) => {
+    let completeCount = 0
+    let pendingCount = 0
     deliveries
       .filter((x: any) => x.customer.name === c)
       .map((d: any) => {
         if (d.delvStatus === 'Complete') {
-          completeCount = completeCount + 1;
+          completeCount = completeCount + 1
         } else {
-          pendingCount = pendingCount + 1;
+          pendingCount = pendingCount + 1
         }
-      });
+      })
     return {
       customer: c,
       completed: completeCount,
       pending: pendingCount,
-    };
-  });
-};
+    }
+  })
+}
 
 export const varianceReportCustomer = (customer: any, deliveries: any) => {
-  return customer.map(customer => {
+  return customer.map((customer) => {
     return deliveries
       .filter((del: any) => del.customer.name === customer)
       .filter((del: any) => del.delvStatus === 'Complete')
       .map((del: any) => {
-        let variance = 0;
+        let variance = 0
+        let items: any = []
         del.items.map((item: any) => {
           const convertVariance = (variance: number, qty: number) => {
             if (variance < 0) {
-              return variance * -1;
+              return variance * -1
             }
             if (variance > 0) {
-              return variance * -1;
+              return variance * -1
             }
 
-            return variance;
-          };
-          const qty = item.qty;
-          const varianceQty = convertVariance(item.varianceQty, item.qty) || 0;
-          const newVariance = (varianceQty / qty) * 100;
+            return variance
+          }
+          const qty = item.qty
+          const varianceQty = convertVariance(item.varianceQty, item.qty) || 0
+          const newVariance = (varianceQty / qty) * 100
 
-          variance = variance + newVariance;
-        });
+          variance = variance + newVariance
 
-        variance = variance != 0 ? variance / del.items.length : 0;
+          if (item.variance !== 0) {
+            items.push({
+              id: item.id,
+              qty: item.qty,
+              varianceQty: item.varianceQty,
+              itemNumber: item.itemNumber,
+              material: item.material,
+              reasonOfVariance: item.reasonOfVariance,
+              date: item.deliveryDateAndTime
+                ? moment(item.deliveryDateAndTime).format('LL')
+                : '',
+              time: item.deliveryDateAndTime
+                ? moment(item.deliveryDateAndTime).format('LT')
+                : '',
+              deliveryId: del.id,
+            })
+          }
+        })
+
+        variance = variance != 0 ? variance / del.items.length : 0
         return {
           delivery: del.id,
           variance: variance,
           id: customer,
-        };
-      });
-  });
-};
+          items,
+        }
+      })
+  })
+}
 
 export const completeReportShipment = (
   shipmentNumber: Array<String>,
   deliveries: any,
 ) => {
-  return shipmentNumber.map(s => {
-    let completeCount = 0;
-    let pendingCount = 0;
+  return shipmentNumber.map((s) => {
+    let completeCount = 0
+    let pendingCount = 0
+    let delivery: any = []
     deliveries
       .filter((x: any) => x.shipmentNumber === s)
       .map((d: any) => {
         if (d.delvStatus === 'Complete') {
-          completeCount = completeCount + 1;
+          completeCount = completeCount + 1
         } else {
-          pendingCount = pendingCount + 1;
+          pendingCount = pendingCount + 1
         }
-      });
+        const date =
+          d.items[0].deliveryDateAndTime &&
+          d.items[0].deliveryDateAndTime != null
+            ? moment(d.items[0].deliveryDateAndTime).format('LL')
+            : ''
+        const time =
+          d.items[0].deliveryDateAndTime &&
+          d.items[0].deliveryDateAndTime != null
+            ? moment(d.items[0].deliveryDateAndTime).format('LT')
+            : ''
+
+        delivery.push({ id: d.id, status: d.delvStatus, date, time })
+      })
     return {
       shipment: s,
       completed: completeCount,
       pending: pendingCount,
-    };
-  });
-};
+      delivery,
+    }
+  })
+}
 
 export const varianceReportShipment = (
   shipmentNumber: Array<String>,
   deliveries: any,
 ) => {
-  return shipmentNumber.map(shipment => {
+  return shipmentNumber.map((shipment) => {
     return deliveries
       .filter((del: any) => del.shipmentNumber === shipment)
       .filter((del: any) => del.delvStatus === 'Complete')
       .map((del: any) => {
-        let variance = 0;
+        let variance = 0
+        let items: any = []
         del.items.map((item: any) => {
           const convertVariance = (variance: number, qty: number) => {
             if (variance < 0) {
-              return variance * -1;
+              return variance * -1
             }
             if (variance > 0) {
-              return variance * -1;
+              return variance * -1
             }
 
-            return variance;
-          };
-          const qty = item.qty;
-          const varianceQty = convertVariance(item.varianceQty, item.qty) || 0;
-          const newVariance = (varianceQty / qty) * 100;
+            return variance
+          }
+          const qty = item.qty
+          const varianceQty = convertVariance(item.varianceQty, item.qty) || 0
+          const newVariance = (varianceQty / qty) * 100
 
-          variance = variance + newVariance;
-        });
+          variance = variance + newVariance
 
-        variance = variance != 0 ? variance / del.items.length : 0;
+          if (item.variance !== 0) {
+            items.push({
+              id: item.id,
+              qty: item.qty,
+              varianceQty: item.varianceQty,
+              itemNumber: item.itemNumber,
+              material: item.material,
+              reasonOfVariance: item.reasonOfVariance,
+              date:
+                item.deliveryDateAndTime && item.deliveryDateAndTime != null
+                  ? moment(item.deliveryDateAndTime).format('LL')
+                  : '',
+              time:
+                item.deliveryDateAndTime && item.deliveryDateAndTime != null
+                  ? moment(item.deliveryDateAndTime).format('LT')
+                  : '',
+              deliveryId: del.id,
+            })
+          }
+        })
+
+        variance = variance != 0 ? variance / del.items.length : 0
         return {
           delivery: del.id,
           variance: variance,
           id: shipment,
-        };
-      });
-  });
-};
+          items,
+        }
+      })
+  })
+}
 
-export const fetchDelivery = async header => {
-  const uri = EPOD_API_URI  || 'http://localhost:4000/graphql';
-  const link = new HttpLink({uri});
+export const fetchDelivery = async (header) => {
+  const uri = EPOD_API_URI || 'http://localhost:4000/graphql'
+  const link = new HttpLink({ uri })
   const operation = {
     query: gql`
       query {
@@ -210,6 +268,7 @@ export const fetchDelivery = async header => {
             qty
             varianceQty
             pricePerUnit
+            reasonOfVariance
             deliveryDateAndTime
           }
           customer {
@@ -243,10 +302,10 @@ export const fetchDelivery = async header => {
         //Authorization: "Basic bWFyazoxMjM=",
       },
     },
-  };
+  }
 
   const result: any = await makePromise(execute(link, operation))
-    .then(data => data)
-    .catch(error => error);
-  return result.data || result.error;
-};
+    .then((data) => data)
+    .catch((error) => error)
+  return result.data || result.error
+}

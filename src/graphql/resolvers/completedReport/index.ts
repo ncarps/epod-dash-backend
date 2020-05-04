@@ -5,30 +5,30 @@ const reportResolver = {
         completeReportShipment,
         varianceReportShipment,
         fetchDelivery,
-      } = context;
+      } = context
 
-      const fetchData: any = await fetchDelivery;
-      const deliveries: any = fetchData.allDeliverys;
+      const fetchData: any = await fetchDelivery
+      const deliveries: any = fetchData.allDeliverys
 
-      const shipmentNumber: Array<String> = [];
-      const map = new Map();
+      const shipmentNumber: Array<String> = []
+      const map = new Map()
       for (const item of deliveries) {
         if (!map.has(item.shipmentNumber)) {
-          map.set(item.shipmentNumber, true);
-          shipmentNumber.push(item.shipmentNumber);
+          map.set(item.shipmentNumber, true)
+          shipmentNumber.push(item.shipmentNumber)
         }
       }
-      console.log(shipmentNumber);
+      console.log(shipmentNumber)
       const completeReport = await completeReportShipment(
         shipmentNumber,
-        deliveries
-      );
-      console.log(completeReport);
+        deliveries,
+      )
+      console.log(completeReport)
       const varianceReport = await varianceReportShipment(
         shipmentNumber,
-        deliveries
-      );
-      console.log(varianceReport);
+        deliveries,
+      )
+      console.log(varianceReport)
       return completeReport.map((r: any, index) => {
         return {
           shipment: r.shipment,
@@ -36,11 +36,12 @@ const reportResolver = {
             completed: r.completed,
             pending: r.pending,
             id: r.shipment,
+            delivery: r.delivery,
           },
           varianceReport: varianceReport[index],
           id: r.shipment,
-        };
-      });
+        }
+      })
     },
 
     shipmentReport: async (parent, { shipmentNo }, context, info) => {
@@ -48,22 +49,22 @@ const reportResolver = {
         completeReportShipment,
         varianceReportShipment,
         fetchDelivery,
-      } = context;
+      } = context
 
-      const fetchData: any = await fetchDelivery;
-      const deliveries: any = fetchData.allDeliverys;
+      const fetchData: any = await fetchDelivery
+      const deliveries: any = fetchData.allDeliverys
 
-      const shipmentNumber: Array<String> = [];
-      shipmentNumber.push(shipmentNo);
+      const shipmentNumber: Array<String> = []
+      shipmentNumber.push(shipmentNo)
       const completeReport = await completeReportShipment(
         shipmentNumber,
-        deliveries
-      );
-      console.log(completeReport);
+        deliveries,
+      )
+      console.log(completeReport)
       const varianceReport = await varianceReportShipment(
         shipmentNumber,
-        deliveries
-      );
+        deliveries,
+      )
 
       return completeReport.map((r: any, index) => {
         return {
@@ -72,11 +73,12 @@ const reportResolver = {
             completed: r.completed,
             pending: r.pending,
             id: r.shipment,
+            delivery: r.delivery,
           },
           varianceReport: varianceReport[index],
           id: r.shipment,
-        };
-      })[0];
+        }
+      })[0]
     },
 
     vendorReport: async (parent, { vendor }, context, info) => {
@@ -84,16 +86,16 @@ const reportResolver = {
         completeReportVendor,
         varianceReportVendor,
         fetchDelivery,
-      } = context;
+      } = context
 
-      const fetchData: any = await fetchDelivery;
-      const deliveries: any = fetchData.allDeliverys;
+      const fetchData: any = await fetchDelivery
+      const deliveries: any = fetchData.allDeliverys
 
-      const trucker: any = [];
-      trucker.push(vendor);
-      const completeReport = await completeReportVendor(trucker, deliveries);
-      console.log(completeReport);
-      const varianceReport = await varianceReportVendor(trucker, deliveries);
+      const trucker: any = []
+      trucker.push(vendor)
+      const completeReport = await completeReportVendor(trucker, deliveries)
+      console.log(completeReport)
+      const varianceReport = await varianceReportVendor(trucker, deliveries)
 
       return completeReport.map((r: any, index) => {
         return {
@@ -105,8 +107,8 @@ const reportResolver = {
           },
           varianceReport: varianceReport[index],
           id: r.vendor,
-        };
-      })[0];
+        }
+      })[0]
     },
 
     allVendorReport: async (parent, args, context, info) => {
@@ -114,24 +116,24 @@ const reportResolver = {
         completeReportVendor,
         varianceReportVendor,
         fetchDelivery,
-      } = context;
+      } = context
 
-      const fetchData: any = await fetchDelivery;
-      const deliveries: any = fetchData.allDeliverys;
+      const fetchData: any = await fetchDelivery
+      const deliveries: any = fetchData.allDeliverys
 
-      const trucker: any = [];
-      const map = new Map();
+      const trucker: any = []
+      const map = new Map()
       for (const item of deliveries) {
         if (!map.has(item.trucker)) {
-          map.set(item.trucker, true);
-          trucker.push(item.trucker);
+          map.set(item.trucker, true)
+          trucker.push(item.trucker)
         }
       }
-      console.log(trucker);
-      const completeReport = await completeReportVendor(trucker, deliveries);
-      console.log(completeReport);
-      const varianceReport = await varianceReportVendor(trucker, deliveries);
-      console.log(varianceReport);
+      console.log(trucker)
+      const completeReport = await completeReportVendor(trucker, deliveries)
+      console.log(completeReport)
+      const varianceReport = await varianceReportVendor(trucker, deliveries)
+      console.log(varianceReport)
       return completeReport.map((r: any, index) => {
         return {
           vendor: r.vendor,
@@ -142,8 +144,8 @@ const reportResolver = {
           },
           varianceReport: varianceReport[index],
           id: r.vendor,
-        };
-      });
+        }
+      })
     },
 
     customerReport: async (parent, { customer }, context, info) => {
@@ -151,20 +153,20 @@ const reportResolver = {
         completeReportCustomer,
         varianceReportCustomer,
         fetchDelivery,
-      } = context;
+      } = context
 
-      const fetchData: any = await fetchDelivery;
-      const deliveries: any = fetchData.allDeliverys;
+      const fetchData: any = await fetchDelivery
+      const deliveries: any = fetchData.allDeliverys
 
-      const cust: any = [];
-      cust.push(customer);
+      const cust: any = []
+      cust.push(customer)
       const id = deliveries.filter((x) => {
         if (x.customer.name == customer) {
-          return x.customer.id;
+          return x.customer.id
         }
-      });
-      const completeReport = await completeReportCustomer(cust, deliveries);
-      const varianceReport = await varianceReportCustomer(cust, deliveries);
+      })
+      const completeReport = await completeReportCustomer(cust, deliveries)
+      const varianceReport = await varianceReportCustomer(cust, deliveries)
 
       return completeReport.map((r: any, index) => {
         return {
@@ -176,8 +178,8 @@ const reportResolver = {
           },
           varianceReport: varianceReport[index],
           id: id[0].customer.id,
-        };
-      })[0];
+        }
+      })[0]
     },
 
     allCustomerReport: async (parent, args, context, info) => {
@@ -185,31 +187,31 @@ const reportResolver = {
         completeReportCustomer,
         varianceReportCustomer,
         fetchDelivery,
-      } = context;
+      } = context
 
-      const fetchData: any = await fetchDelivery;
-      const deliveries: any = fetchData.allDeliverys;
+      const fetchData: any = await fetchDelivery
+      const deliveries: any = fetchData.allDeliverys
 
-      const customer: any = [];
-      const map = new Map();
+      const customer: any = []
+      const map = new Map()
       for (const item of deliveries) {
         if (!map.has(item.customer.name)) {
-          map.set(item.customer.name, true);
-          customer.push(item.customer.name);
+          map.set(item.customer.name, true)
+          customer.push(item.customer.name)
         }
       }
       const customerId = (name) => {
         return deliveries.filter((x) => {
           if (x.customer.name == name) {
-            return x.customer.id;
+            return x.customer.id
           }
-        });
-      };
-      const completeReport = await completeReportCustomer(customer, deliveries);
-      const varianceReport = await varianceReportCustomer(customer, deliveries);
+        })
+      }
+      const completeReport = await completeReportCustomer(customer, deliveries)
+      const varianceReport = await varianceReportCustomer(customer, deliveries)
       return completeReport.map((r: any, index) => {
-        const id = customerId(r.customer)[0].customer.id;
-        console.log(id);
+        const id = customerId(r.customer)[0].customer.id
+        console.log(id)
         return {
           customer: r.customer,
           completeReport: {
@@ -219,13 +221,13 @@ const reportResolver = {
           },
           varianceReport: varianceReport[index],
           id: id,
-        };
-      });
+        }
+      })
     },
 
     allDeliverys: async (parent, args, { fetchDelivery }, info) => {
-      const fetchData: any = await fetchDelivery;
-      const deliveries: any = fetchData.allDeliverys;
+      const fetchData: any = await fetchDelivery
+      const deliveries: any = fetchData.allDeliverys
 
       return deliveries.map((del) => ({
         customer: del.customer.name,
@@ -240,7 +242,7 @@ const reportResolver = {
           uom: i.uom,
           qty: i.qty,
           varianceQty: i.varianceQty,
-          reasonOfVariance: i.varianceQty,
+          reasonOfVariance: i.reasonOfVariance,
           deliveryDateAndTime: i.deliveryDateAndTime,
         })),
         deliveryStatus: del.delvStatus,
@@ -248,7 +250,7 @@ const reportResolver = {
         scheduledTime: del.scheduledTime,
         shipmentNumber: del.shipmentNumber,
         trucker: del.trucker,
-      }));
+      }))
     },
     loginAuth: async (parent, { userBase }, context, info) => {
       //      console.log(userBase);
@@ -261,13 +263,13 @@ const reportResolver = {
 
       //should not throw?, for login in client purposes? find a workaround
 
-      const { user } = context;
+      const { user } = context
       if (user.id && user.username) {
-        return { success: true, message: "Authenticated." };
+        return { success: true, message: 'Authenticated.' }
       }
-      return { success: false, message: "Invalid Credentials." };
+      return { success: false, message: 'Invalid Credentials.' }
     },
   },
-};
+}
 
-export default reportResolver;
+export default reportResolver
