@@ -1,4 +1,4 @@
-import { gql } from "apollo-server";
+import { gql } from 'apollo-server'
 
 const reportTypeDef = gql`
   type Message {
@@ -9,12 +9,33 @@ const reportTypeDef = gql`
     id: ID
     completed: String
     pending: String
+    delivery: [DeliveryStatusReport]
+  }
+
+  type DeliveryStatusReport {
+    id: ID
+    status: String
+    date: String
+    time: String
+  }
+
+  type DeliveryVarianceReport {
+    id: ID
+    qty: String
+    varianceQty: String
+    itemNumber: String
+    material: String
+    reasonOfVariance: String
+    date: String
+    time: String
+    deliveryId: String
   }
 
   type VarianceReport {
     id: ID
     delivery: String
     variance: String
+    items: [DeliveryVarianceReport]
   }
 
   type Shipment {
@@ -73,6 +94,6 @@ const reportTypeDef = gql`
     allDeliverys: [Delivery]
     loginAuth(userBase: String!): Message
   }
-`;
+`
 
-export default reportTypeDef;
+export default reportTypeDef

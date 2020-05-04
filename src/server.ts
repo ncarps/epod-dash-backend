@@ -25,12 +25,12 @@ import {
   varianceReportVendor,
 } from "./helper";
 
-const { authURI } = process.env;
+const { authURI, PORT, EPOD_API_URI } = process.env;
 
 const getUser = async (authorizationToken) => {
   const [tokenType, token] = authorizationToken.split(" ");
   let authGqlClient;
-  console.log("AuthURI", authURI);
+  console.log("AuthURI", authURI, authorizationToken);
 
   if (tokenType) {
     authGqlClient = new ApolloClient({
@@ -42,7 +42,7 @@ const getUser = async (authorizationToken) => {
           Authorization: authorizationToken,
         },
       }),
-      name: "epod-service",
+      name: "epod-dash-service",
       version: "0.0.0",
       defaultOptions: {
         query: {
@@ -274,7 +274,7 @@ class AuthenticatedDirective extends SchemaDirectiveVisitor {
 const startServer = async () => {
   const server = await buildServer();
   const app = express();
-  const port = 5000;
+  const port = PORT || 5000;
   server.applyMiddleware({ app });
 
   app.listen({ port: port }, () =>
