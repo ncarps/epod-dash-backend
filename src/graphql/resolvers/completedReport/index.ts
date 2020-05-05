@@ -7,7 +7,7 @@ const reportResolver = {
         fetchDelivery,
       } = context
 
-      const fetchData: any = await fetchDelivery
+      const fetchData: any = await fetchDelivery()
       const deliveries: any = fetchData.allDeliverys
 
       const shipmentNumber: Array<String> = []
@@ -18,17 +18,17 @@ const reportResolver = {
           shipmentNumber.push(item.shipmentNumber)
         }
       }
-      console.log(shipmentNumber)
+
       const completeReport = await completeReportShipment(
         shipmentNumber,
         deliveries,
       )
-      console.log(completeReport)
+
       const varianceReport = await varianceReportShipment(
         shipmentNumber,
         deliveries,
       )
-      console.log(varianceReport)
+
       return completeReport.map((r: any, index) => {
         return {
           shipment: r.shipment,
@@ -51,7 +51,7 @@ const reportResolver = {
         fetchDelivery,
       } = context
 
-      const fetchData: any = await fetchDelivery
+      const fetchData: any = await fetchDelivery()
       const deliveries: any = fetchData.allDeliverys
 
       const shipmentNumber: Array<String> = []
@@ -60,7 +60,7 @@ const reportResolver = {
         shipmentNumber,
         deliveries,
       )
-      console.log(completeReport)
+
       const varianceReport = await varianceReportShipment(
         shipmentNumber,
         deliveries,
@@ -88,13 +88,12 @@ const reportResolver = {
         fetchDelivery,
       } = context
 
-      const fetchData: any = await fetchDelivery
+      const fetchData: any = await fetchDelivery()
       const deliveries: any = fetchData.allDeliverys
 
       const trucker: any = []
       trucker.push(vendor)
       const completeReport = await completeReportVendor(trucker, deliveries)
-      console.log(completeReport)
       const varianceReport = await varianceReportVendor(trucker, deliveries)
 
       return completeReport.map((r: any, index) => {
@@ -104,6 +103,7 @@ const reportResolver = {
             completed: r.completed,
             pending: r.pending,
             id: r.vendor,
+            delivery: r.delivery,
           },
           varianceReport: varianceReport[index],
           id: r.vendor,
@@ -118,7 +118,7 @@ const reportResolver = {
         fetchDelivery,
       } = context
 
-      const fetchData: any = await fetchDelivery
+      const fetchData: any = await fetchDelivery()
       const deliveries: any = fetchData.allDeliverys
 
       const trucker: any = []
@@ -129,11 +129,11 @@ const reportResolver = {
           trucker.push(item.trucker)
         }
       }
-      console.log(trucker)
+
       const completeReport = await completeReportVendor(trucker, deliveries)
-      console.log(completeReport)
+
       const varianceReport = await varianceReportVendor(trucker, deliveries)
-      console.log(varianceReport)
+
       return completeReport.map((r: any, index) => {
         return {
           vendor: r.vendor,
@@ -141,6 +141,7 @@ const reportResolver = {
             completed: r.completed,
             pending: r.pending,
             id: r.vendor,
+            delivery: r.delivery,
           },
           varianceReport: varianceReport[index],
           id: r.vendor,
@@ -155,7 +156,7 @@ const reportResolver = {
         fetchDelivery,
       } = context
 
-      const fetchData: any = await fetchDelivery
+      const fetchData: any = await fetchDelivery()
       const deliveries: any = fetchData.allDeliverys
 
       const cust: any = []
@@ -175,6 +176,7 @@ const reportResolver = {
             completed: r.completed,
             pending: r.pending,
             id: r.customer,
+            delivery: r.delivery,
           },
           varianceReport: varianceReport[index],
           id: id[0].customer.id,
@@ -189,7 +191,7 @@ const reportResolver = {
         fetchDelivery,
       } = context
 
-      const fetchData: any = await fetchDelivery
+      const fetchData: any = await fetchDelivery()
       const deliveries: any = fetchData.allDeliverys
 
       const customer: any = []
@@ -209,15 +211,17 @@ const reportResolver = {
       }
       const completeReport = await completeReportCustomer(customer, deliveries)
       const varianceReport = await varianceReportCustomer(customer, deliveries)
+      console.log('Customer', varianceReport)
       return completeReport.map((r: any, index) => {
         const id = customerId(r.customer)[0].customer.id
-        console.log(id)
+
         return {
           customer: r.customer,
           completeReport: {
             completed: r.completed,
             pending: r.pending,
             id: r.customer,
+            delivery: r.delivery,
           },
           varianceReport: varianceReport[index],
           id: id,
@@ -226,7 +230,7 @@ const reportResolver = {
     },
 
     allDeliverys: async (parent, args, { fetchDelivery }, info) => {
-      const fetchData: any = await fetchDelivery
+      const fetchData: any = await fetchDelivery()
       const deliveries: any = fetchData.allDeliverys
 
       return deliveries.map((del) => ({
