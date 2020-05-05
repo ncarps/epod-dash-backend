@@ -15,6 +15,7 @@ export const completeReportVendor = (trucker: any, deliveries: any) => {
   return trucker.map((t) => {
     let completeCount = 0
     let pendingCount = 0
+    let delivery: any = []
     deliveries
       .filter((x: any) => x.trucker === t)
       .map((d: any) => {
@@ -23,11 +24,24 @@ export const completeReportVendor = (trucker: any, deliveries: any) => {
         } else {
           pendingCount = pendingCount + 1
         }
+        const date =
+          d.items[0].deliveryDateAndTime &&
+          d.items[0].deliveryDateAndTime != null
+            ? moment(d.items[0].deliveryDateAndTime).format('LL')
+            : ''
+        const time =
+          d.items[0].deliveryDateAndTime &&
+          d.items[0].deliveryDateAndTime != null
+            ? moment(d.items[0].deliveryDateAndTime).format('LT')
+            : ''
+
+        delivery.push({ id: d.id, status: d.delvStatus, date, time })
       })
     return {
       vendor: t,
       completed: completeCount,
       pending: pendingCount,
+      delivery,
     }
   })
 }
@@ -39,6 +53,7 @@ export const varianceReportVendor = (trucker: any, deliveries: any) => {
       .filter((del: any) => del.delvStatus === 'Complete')
       .map((del: any) => {
         let variance = 0
+        let items: any = []
         del.items.map((item: any) => {
           const convertVariance = (variance: number, qty: number) => {
             console.log(variance)
@@ -57,6 +72,23 @@ export const varianceReportVendor = (trucker: any, deliveries: any) => {
           const newVariance = (varianceQty / qty) * 100
 
           variance = variance + newVariance
+          if (item.varianceQty !== 0) {
+            items.push({
+              id: item.id,
+              qty: item.qty,
+              varianceQty: item.varianceQty,
+              itemNumber: item.itemNumber,
+              material: item.material,
+              reasonOfVariance: item.reasonOfVariance,
+              date: item.deliveryDateAndTime
+                ? moment(item.deliveryDateAndTime).format('LL')
+                : '',
+              time: item.deliveryDateAndTime
+                ? moment(item.deliveryDateAndTime).format('LT')
+                : '',
+              deliveryId: del.id,
+            })
+          }
         })
         console.log(del.items.length)
         variance = variance != 0 ? variance / del.items.length : 0
@@ -64,6 +96,7 @@ export const varianceReportVendor = (trucker: any, deliveries: any) => {
           delivery: del.id,
           variance: variance,
           id: vendor,
+          items,
         }
       })
   })
@@ -73,6 +106,7 @@ export const completeReportCustomer = (customer: any, deliveries: any) => {
   return customer.map((c) => {
     let completeCount = 0
     let pendingCount = 0
+    let delivery: any = []
     deliveries
       .filter((x: any) => x.customer.name === c)
       .map((d: any) => {
@@ -81,11 +115,25 @@ export const completeReportCustomer = (customer: any, deliveries: any) => {
         } else {
           pendingCount = pendingCount + 1
         }
+
+        const date =
+          d.items[0].deliveryDateAndTime &&
+          d.items[0].deliveryDateAndTime != null
+            ? moment(d.items[0].deliveryDateAndTime).format('LL')
+            : ''
+        const time =
+          d.items[0].deliveryDateAndTime &&
+          d.items[0].deliveryDateAndTime != null
+            ? moment(d.items[0].deliveryDateAndTime).format('LT')
+            : ''
+
+        delivery.push({ id: d.id, status: d.delvStatus, date, time })
       })
     return {
       customer: c,
       completed: completeCount,
       pending: pendingCount,
+      delivery,
     }
   })
 }
@@ -93,8 +141,10 @@ export const completeReportCustomer = (customer: any, deliveries: any) => {
 export const varianceReportCustomer = (customer: any, deliveries: any) => {
   return customer.map((customer) => {
     return deliveries
-      .filter((del: any) => del.customer.name === customer)
-      .filter((del: any) => del.delvStatus === 'Complete')
+      .filter(
+        (del: any) =>
+          del.customer.name === customer && del.delvStatus === 'Complete',
+      )
       .map((del: any) => {
         let variance = 0
         let items: any = []
@@ -115,7 +165,7 @@ export const varianceReportCustomer = (customer: any, deliveries: any) => {
 
           variance = variance + newVariance
 
-          if (item.variance !== 0) {
+          if (item.varianceQty !== 0) {
             items.push({
               id: item.id,
               qty: item.qty,
@@ -211,7 +261,7 @@ export const varianceReportShipment = (
 
           variance = variance + newVariance
 
-          if (item.variance !== 0) {
+          if (item.varianceQty !== 0) {
             items.push({
               id: item.id,
               qty: item.qty,
