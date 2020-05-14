@@ -16,6 +16,7 @@ export const completeReportVendor = (trucker: any, deliveries: any) => {
     let completeCount = 0
     let pendingCount = 0
     let delivery: any = []
+    let closeShipment = 0
     deliveries
       .filter((x: any) => x.trucker === t)
       .map((d: any) => {
@@ -25,20 +26,36 @@ export const completeReportVendor = (trucker: any, deliveries: any) => {
           pendingCount = pendingCount + 1
         }
         const date =
-          d.items[0].deliveryDateAndTime &&
-          d.items[0].deliveryDateAndTime != null
-            ? moment(d.items[0].deliveryDateAndTime).format('LL')
+          d.scheduledDate && d.scheduledDate != null
+            ? moment(d.scheduledDate).format('LL')
             : ''
-        const time =
-          d.items[0].deliveryDateAndTime &&
-          d.items[0].deliveryDateAndTime != null
-            ? moment(d.items[0].deliveryDateAndTime).format('LT')
-            : ''
+        const time = d.scheduledTime
+        d.scheduledTime != null ? moment(d.scheduledTime).format('LT') : ''
 
         delivery.push({ id: d.id, status: d.delvStatus, date, time })
       })
+
+    const shipmentNumber: Array<String> = []
+    const map = new Map()
+    for (const item of deliveries) {
+      if (!map.has(item.shipmentNumber)) {
+        map.set(item.shipmentNumber, true)
+        shipmentNumber.push(item.shipmentNumber)
+      }
+    }
+
+    shipmentNumber.map((s) => {
+      const statusCount = deliveries.filter(
+        (d) => d.shipmentNumber === s && d.delvStatus === 'Pending',
+      )
+      if (!statusCount.length) {
+        closeShipment = closeShipment + 1
+      }
+    })
     return {
       vendor: t,
+      closeShipment,
+      totalShipment: shipmentNumber.length,
       completed: completeCount,
       pending: pendingCount,
       delivery,
@@ -117,16 +134,11 @@ export const completeReportCustomer = (customer: any, deliveries: any) => {
         }
 
         const date =
-          d.items[0].deliveryDateAndTime &&
-          d.items[0].deliveryDateAndTime != null
-            ? moment(d.items[0].deliveryDateAndTime).format('LL')
+          d.scheduledDate && d.scheduledDate != null
+            ? moment(d.scheduledDate).format('LL')
             : ''
-        const time =
-          d.items[0].deliveryDateAndTime &&
-          d.items[0].deliveryDateAndTime != null
-            ? moment(d.items[0].deliveryDateAndTime).format('LT')
-            : ''
-
+        const time = d.scheduledTime
+        d.scheduledTime != null ? moment(d.scheduledTime).format('LT') : ''
         delivery.push({ id: d.id, status: d.delvStatus, date, time })
       })
     return {
@@ -203,6 +215,9 @@ export const completeReportShipment = (
     let completeCount = 0
     let pendingCount = 0
     let delivery: any = []
+    let driver
+    let trucker
+    let porter
     deliveries
       .filter((x: any) => x.shipmentNumber === s)
       .map((d: any) => {
@@ -212,20 +227,23 @@ export const completeReportShipment = (
           pendingCount = pendingCount + 1
         }
         const date =
-          d.items[0].deliveryDateAndTime &&
-          d.items[0].deliveryDateAndTime != null
-            ? moment(d.items[0].deliveryDateAndTime).format('LL')
+          d.scheduledDate && d.scheduledDate != null
+            ? moment(d.scheduledDate).format('LL')
             : ''
-        const time =
-          d.items[0].deliveryDateAndTime &&
-          d.items[0].deliveryDateAndTime != null
-            ? moment(d.items[0].deliveryDateAndTime).format('LT')
-            : ''
+        const time = d.scheduledTime
+        d.scheduledTime != null ? moment(d.scheduledTime).format('LT') : ''
 
         delivery.push({ id: d.id, status: d.delvStatus, date, time })
+        driver = d.driver.name
+        trucker = d.trucker
+        porter = d.driver.porter
       })
     return {
       shipment: s,
+      totalDeliveries: completeCount + pendingCount,
+      driver,
+      trucker,
+      porter,
       completed: completeCount,
       pending: pendingCount,
       delivery,
@@ -308,6 +326,7 @@ export const fetchDelivery = async (header) => {
             id
             name
             plateNumber
+            porter
           }
           items {
             id

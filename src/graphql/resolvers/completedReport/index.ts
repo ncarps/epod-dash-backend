@@ -1,6 +1,8 @@
+import moment from 'moment'
+
 const reportResolver = {
   Query: {
-    allShipmentReport: async (parent, args, context, info) => {
+    allShipmentReport: async (parent, { dateFrom, dateTo }, context, info) => {
       const {
         completeReportShipment,
         varianceReportShipment,
@@ -8,7 +10,15 @@ const reportResolver = {
       } = context
 
       const fetchData: any = await fetchDelivery()
-      const deliveries: any = fetchData.allDeliverys
+      let deliveries: Array<any> = fetchData.allDeliverys
+
+      if (dateFrom || dateTo) {
+        deliveries = deliveries.filter((del) => {
+          if (filterByDateRange(dateFrom, dateTo, del.scheduledDate)) {
+            return del
+          }
+        })
+      }
 
       const shipmentNumber: Array<String> = []
       const map = new Map()
@@ -32,6 +42,10 @@ const reportResolver = {
       return completeReport.map((r: any, index) => {
         return {
           shipment: r.shipment,
+          trucker: r.trucker,
+          totalDeliveries: r.totalDeliveries,
+          driver: r.driver,
+          porter: r.porter,
           completeReport: {
             completed: r.completed,
             pending: r.pending,
@@ -69,6 +83,10 @@ const reportResolver = {
       return completeReport.map((r: any, index) => {
         return {
           shipment: r.shipment,
+          trucker: r.trucker,
+          totalDeliveries: r.totalDeliveries,
+          driver: r.driver,
+          porter: r.porter,
           completeReport: {
             completed: r.completed,
             pending: r.pending,
@@ -99,6 +117,8 @@ const reportResolver = {
       return completeReport.map((r: any, index) => {
         return {
           vendor: r.vendor,
+          closeShipment: r.closeShipment,
+          totalShipment: r.totalShipment,
           completeReport: {
             completed: r.completed,
             pending: r.pending,
@@ -111,7 +131,7 @@ const reportResolver = {
       })[0]
     },
 
-    allVendorReport: async (parent, args, context, info) => {
+    allVendorReport: async (parent, { dateFrom, dateTo }, context, info) => {
       const {
         completeReportVendor,
         varianceReportVendor,
@@ -119,7 +139,15 @@ const reportResolver = {
       } = context
 
       const fetchData: any = await fetchDelivery()
-      const deliveries: any = fetchData.allDeliverys
+      let deliveries: any = fetchData.allDeliverys
+
+      if (dateFrom || dateTo) {
+        deliveries = deliveries.filter((del) => {
+          if (filterByDateRange(dateFrom, dateTo, del.scheduledDate)) {
+            return del
+          }
+        })
+      }
 
       const trucker: any = []
       const map = new Map()
@@ -137,6 +165,8 @@ const reportResolver = {
       return completeReport.map((r: any, index) => {
         return {
           vendor: r.vendor,
+          closeShipment: r.closeShipment,
+          totalShipment: r.totalShipment,
           completeReport: {
             completed: r.completed,
             pending: r.pending,
@@ -184,7 +214,7 @@ const reportResolver = {
       })[0]
     },
 
-    allCustomerReport: async (parent, args, context, info) => {
+    allCustomerReport: async (parent, { dateFrom, dateTo }, context, info) => {
       const {
         completeReportCustomer,
         varianceReportCustomer,
@@ -192,7 +222,15 @@ const reportResolver = {
       } = context
 
       const fetchData: any = await fetchDelivery()
-      const deliveries: any = fetchData.allDeliverys
+      let deliveries: any = fetchData.allDeliverys
+
+      if (dateFrom || dateTo) {
+        deliveries = deliveries.filter((del) => {
+          if (filterByDateRange(dateFrom, dateTo, del.scheduledDate)) {
+            return del
+          }
+        })
+      }
 
       const customer: any = []
       const map = new Map()
@@ -277,3 +315,49 @@ const reportResolver = {
 }
 
 export default reportResolver
+
+const filterByDateRange = (dateFrom, dateTo, deliveryDate) => {
+  const inputDateFrom = dateFrom ? moment(dateFrom).format('LL') : undefined
+  const inputDateTo = dateTo ? moment(dateTo).format('LL') : undefined
+  const inputDeliveryDate = moment(deliveryDate).format('LL')
+  console.log('Input Dates', inputDateFrom, inputDateTo, inputDeliveryDate)
+  if (dateFrom && dateTo) {
+    if (
+      moment(inputDeliveryDate).isSame(inputDateFrom) ||
+      moment(inputDeliveryDate).isSame(inputDateTo)
+    ) {
+      return true
+    }
+    if (
+      moment(inputDeliveryDate).isAfter(inputDateFrom) &&
+      moment(inputDeliveryDate).isBefore(inputDateTo)
+    ) {
+      return true
+    }
+
+    return false
+  }
+
+  if (dateTo) {
+    if (moment(inputDeliveryDate).isSame(inputDateTo)) {
+      return true
+    }
+    if (moment(inputDeliveryDate).isBefore(inputDateTo)) {
+      return true
+    }
+    return false
+  }
+
+  if (dateFrom) {
+    console.log('3rd condition')
+    if (moment(inputDeliveryDate).isSame(inputDateFrom)) {
+      return true
+    }
+    if (moment(inputDeliveryDate).isAfter(inputDateFrom)) {
+      return true
+    }
+    return false
+  }
+
+  return false
+}
