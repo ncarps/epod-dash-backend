@@ -25,15 +25,11 @@ export const completeReportVendor = (trucker: any, deliveries: any) => {
           pendingCount = pendingCount + 1
         }
         const date =
-          d.items[0].deliveryDateAndTime &&
-          d.items[0].deliveryDateAndTime != null
-            ? moment(d.items[0].deliveryDateAndTime).format('LL')
+          d.scheduledDate && d.scheduledDate != null
+            ? moment(d.scheduledDate).format('LL')
             : ''
-        const time =
-          d.items[0].deliveryDateAndTime &&
-          d.items[0].deliveryDateAndTime != null
-            ? moment(d.items[0].deliveryDateAndTime).format('LT')
-            : ''
+        const time = d.scheduledTime
+        d.scheduledTime != null ? moment(d.scheduledTime).format('LT') : ''
 
         delivery.push({ id: d.id, status: d.delvStatus, date, time })
       })
@@ -117,16 +113,11 @@ export const completeReportCustomer = (customer: any, deliveries: any) => {
         }
 
         const date =
-          d.items[0].deliveryDateAndTime &&
-          d.items[0].deliveryDateAndTime != null
-            ? moment(d.items[0].deliveryDateAndTime).format('LL')
+          d.scheduledDate && d.scheduledDate != null
+            ? moment(d.scheduledDate).format('LL')
             : ''
-        const time =
-          d.items[0].deliveryDateAndTime &&
-          d.items[0].deliveryDateAndTime != null
-            ? moment(d.items[0].deliveryDateAndTime).format('LT')
-            : ''
-
+        const time = d.scheduledTime
+        d.scheduledTime != null ? moment(d.scheduledTime).format('LT') : ''
         delivery.push({ id: d.id, status: d.delvStatus, date, time })
       })
     return {
@@ -212,15 +203,11 @@ export const completeReportShipment = (
           pendingCount = pendingCount + 1
         }
         const date =
-          d.items[0].deliveryDateAndTime &&
-          d.items[0].deliveryDateAndTime != null
-            ? moment(d.items[0].deliveryDateAndTime).format('LL')
+          d.scheduledDate && d.scheduledDate != null
+            ? moment(d.scheduledDate).format('LL')
             : ''
-        const time =
-          d.items[0].deliveryDateAndTime &&
-          d.items[0].deliveryDateAndTime != null
-            ? moment(d.items[0].deliveryDateAndTime).format('LT')
-            : ''
+        const time = d.scheduledTime
+        d.scheduledTime != null ? moment(d.scheduledTime).format('LT') : ''
 
         delivery.push({ id: d.id, status: d.delvStatus, date, time })
       })
