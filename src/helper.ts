@@ -154,77 +154,74 @@ export const materialReportCustomer = (deliveries: any) => {
   let totalVariance = 0
   let totalQuantity = 0
 
-  return deliveries.map((d) => {
-    console.log(d.id)
-    d.items.map((i) => {
-      totalVariance = totalVariance + parseFloat(i.varianceQty)
-      totalQuantity = totalQuantity + parseFloat(i.qty)
+  return deliveries
+    .filter((del) => del.delvStatus === 'Complete')
+    .map((d) => {
+      console.log(d.id)
+      d.items.map((i) => {
+        totalVariance = totalVariance + parseFloat(i.varianceQty)
+        totalQuantity = totalQuantity + parseFloat(i.qty)
+      })
+      return {
+        id: d.id,
+        totalReceived: totalQuantity + totalVariance,
+        totalVariance: totalVariance * -1,
+        customer: d.customer.name,
+        shipment: d.shipmentNumber,
+      }
     })
-    return {
-      id: d.id,
-      totalReceived: totalQuantity + totalVariance,
-      totalVariance: totalVariance * -1,
-      customer: d.customer.name,
-      shipment: d.shipmentNumber,
-    }
-  })
 }
 
-export const varianceReportCustomer = (customer: any, deliveries: any) => {
-  return customer.map((customer) => {
-    return deliveries
-      .filter(
-        (del: any) =>
-          del.customer.name === customer && del.delvStatus === 'Complete',
-      )
-      .map((del: any) => {
-        let variance = 0
-        let items: any = []
-        del.items.map((item: any) => {
-          const convertVariance = (variance: number, qty: number) => {
-            if (variance < 0) {
-              return variance * -1
-            }
-            if (variance > 0) {
-              return variance * -1
-            }
-
-            return variance
+export const varianceReportCustomer = (deliveries: any) => {
+  return deliveries
+    .filter((del: any) => del.delvStatus === 'Complete')
+    .map((del: any) => {
+      let variance = 0
+      let items: any = []
+      del.items.map((item: any) => {
+        const convertVariance = (variance: number, qty: number) => {
+          if (variance < 0) {
+            return variance * -1
           }
-          const qty = item.qty
-          const varianceQty = convertVariance(item.varianceQty, item.qty) || 0
-          const newVariance = (varianceQty / qty) * 100
-
-          variance = variance + newVariance
-
-          if (item.varianceQty !== 0) {
-            items.push({
-              id: item.id,
-              qty: item.qty,
-              varianceQty: item.varianceQty,
-              itemNumber: item.itemNumber,
-              material: item.material,
-              reasonOfVariance: item.reasonOfVariance,
-              date: item.deliveryDateAndTime
-                ? moment(item.deliveryDateAndTime).format('LL')
-                : '',
-              time: item.deliveryDateAndTime
-                ? moment(item.deliveryDateAndTime).format('LT')
-                : '',
-              deliveryId: del.id,
-            })
+          if (variance > 0) {
+            return variance * -1
           }
-        })
 
-        variance = variance != 0 ? variance / del.items.length : 0
-        return {
-          delivery: del.id,
-          variance: variance,
-          id: customer,
-          items,
+          return variance
+        }
+        const qty = item.qty
+        const varianceQty = convertVariance(item.varianceQty, item.qty) || 0
+        const newVariance = (varianceQty / qty) * 100
+
+        variance = variance + newVariance
+
+        if (item.varianceQty !== 0) {
+          items.push({
+            id: item.id,
+            qty: item.qty,
+            varianceQty: item.varianceQty,
+            itemNumber: item.itemNumber,
+            material: item.material,
+            reasonOfVariance: item.reasonOfVariance,
+            date: item.deliveryDateAndTime
+              ? moment(item.deliveryDateAndTime).format('LL')
+              : '',
+            time: item.deliveryDateAndTime
+              ? moment(item.deliveryDateAndTime).format('LT')
+              : '',
+            deliveryId: del.id,
+          })
         }
       })
-  })
+
+      variance = variance != 0 ? variance / del.items.length : 0
+      return {
+        delivery: del.id,
+        variance: variance,
+        id: del.id,
+        items,
+      }
+    })
 }
 
 export const completeReportShipment = (

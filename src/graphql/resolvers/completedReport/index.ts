@@ -1,4 +1,5 @@
 import moment from 'moment'
+import { varianceReportCustomer } from '../../../helper'
 
 const reportResolver = {
   Query: {
@@ -215,7 +216,11 @@ const reportResolver = {
     },
 
     allCustomerReport: async (parent, { dateFrom, dateTo }, context, info) => {
-      const { materialReportCustomer, fetchDelivery } = context
+      const {
+        materialReportCustomer,
+        varianceReportCustomer,
+        fetchDelivery,
+      } = context
 
       const fetchData: any = await fetchDelivery()
       let deliveries: any = fetchData.allDeliverys
@@ -236,7 +241,9 @@ const reportResolver = {
         shipment: String
       }> = await materialReportCustomer(deliveries)
       console.log(materialReport)
-      return materialReport.map((mr) => ({
+
+      const varianceReport = await varianceReportCustomer(deliveries)
+      return materialReport.map((mr, index) => ({
         id: mr.id,
         shipment: mr.shipment,
         customer: mr.customer,
@@ -246,6 +253,7 @@ const reportResolver = {
           totalReceived: mr.totalReceived,
           totalVariance: mr.totalVariance,
         },
+        varianceReport: varianceReport[index],
       }))
       // const varianceReport = await varianceReportCustomer(customer, deliveries)
       // console.log('Customer', varianceReport)
