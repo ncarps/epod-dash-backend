@@ -58,11 +58,21 @@ const reportTypeDef = gql`
     completeReport: CompleteReport
   }
 
+  type MaterialDetails {
+    id: ID
+    itemNumber: String
+    material: String
+    uom: String
+    qty: String
+  }
+
   type Customer {
     id: ID
     customer: String
     shipment: String
     delivery: String
+    noVarianceMaterial: [MaterialDetails]
+    withVarianceMaterial: [MaterialDetails]
     varianceReport: VarianceReport
     materialReport: MaterialReport
   }

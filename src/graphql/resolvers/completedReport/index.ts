@@ -1,5 +1,4 @@
 import moment from 'moment'
-import { varianceReportCustomer } from '../../../helper'
 
 const reportResolver = {
   Query: {
@@ -243,6 +242,7 @@ const reportResolver = {
       console.log(materialReport)
 
       const varianceReport = await varianceReportCustomer(deliveries)
+
       return materialReport.map((mr, index) => ({
         id: mr.id,
         shipment: mr.shipment,
@@ -254,6 +254,12 @@ const reportResolver = {
           totalVariance: mr.totalVariance,
         },
         varianceReport: varianceReport[index],
+        noVarianceMaterial: noVarianceMaterialReport(
+          deliveries.filter((d) => d.id === mr.id),
+        ),
+        withVarianceMaterial: withVarianceMaterialReport(
+          deliveries.filter((d) => d.id === mr.id),
+        ),
       }))
       // const varianceReport = await varianceReportCustomer(customer, deliveries)
       // console.log('Customer', varianceReport)
@@ -367,4 +373,56 @@ const filterByDateRange = (dateFrom, dateTo, deliveryDate) => {
   }
 
   return false
+}
+
+const noVarianceMaterialReport = (deliveries: any) => {
+  let material: Array<{
+    id: String
+    itemNumber: String
+    material: String
+    uom: String
+    qty: String
+  }> = []
+  deliveries.map((del) => {
+    del.items.map((i) => {
+      if (i.varianceQty === 0) {
+        material.push({
+          id: i.id,
+          itemNumber: i.itemNumber,
+          material: i.material,
+          uom: i.uom,
+          qty: i.qty,
+        })
+      }
+    })
+  })
+  console.log(deliveries)
+  console.log(material)
+  return material
+}
+
+const withVarianceMaterialReport = (deliveries: any) => {
+  let material: Array<{
+    id: String
+    itemNumber: String
+    material: String
+    uom: String
+    qty: String
+  }> = []
+  deliveries.map((del) => {
+    del.items.map((i) => {
+      if (i.varianceQty > 0 || i.varianceQty < 0) {
+        material.push({
+          id: i.id,
+          itemNumber: i.itemNumber,
+          material: i.material,
+          uom: i.uom,
+          qty: i.qty,
+        })
+      }
+    })
+  })
+  console.log(deliveries)
+  console.log(material)
+  return material
 }

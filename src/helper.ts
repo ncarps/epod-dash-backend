@@ -150,6 +150,54 @@ export const completeReportCustomer = (customer: any, deliveries: any) => {
   })
 }
 
+export const noVarianceMaterialReport = (deliveries: any) => {
+  let material: Array<{
+    id: String
+    itemNumber: String
+    material: String
+    uom: String
+    qty: String
+  }> = []
+  deliveries.map((del) => {
+    del.items.map((i) => {
+      if (i.varianceQty === 0) {
+        material.push({
+          id: i.id,
+          itemNumber: i.itemNumber,
+          material: i.material,
+          uom: i.uom,
+          qty: i.qty,
+        })
+      }
+    })
+  })
+  return material
+}
+
+export const withVarianceMaterialReport = (deliveries: any) => {
+  let material: Array<{
+    id: String
+    itemNumber: String
+    material: String
+    uom: String
+    qty: String
+  }> = []
+  deliveries.map((del) => {
+    del.items.map((i) => {
+      if (i.varianceQty > 0 || i.varianceQty < 0) {
+        material.push({
+          id: i.id,
+          itemNumber: i.itemNumber,
+          material: i.material,
+          uom: i.uom,
+          qty: i.qty,
+        })
+      }
+    })
+  })
+  return material
+}
+
 export const materialReportCustomer = (deliveries: any) => {
   let totalVariance = 0
   let totalQuantity = 0
