@@ -150,6 +150,26 @@ export const completeReportCustomer = (customer: any, deliveries: any) => {
   })
 }
 
+export const materialReportCustomer = (deliveries: any) => {
+  let totalVariance = 0
+  let totalQuantity = 0
+
+  return deliveries.map((d) => {
+    console.log(d.id)
+    d.items.map((i) => {
+      totalVariance = totalVariance + parseFloat(i.varianceQty)
+      totalQuantity = totalQuantity + parseFloat(i.qty)
+    })
+    return {
+      id: d.id,
+      totalReceived: totalQuantity + totalVariance,
+      totalVariance: totalVariance * -1,
+      customer: d.customer.name,
+      shipment: d.shipmentNumber,
+    }
+  })
+}
+
 export const varianceReportCustomer = (customer: any, deliveries: any) => {
   return customer.map((customer) => {
     return deliveries

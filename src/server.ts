@@ -23,6 +23,7 @@ import {
   varianceReportCustomer,
   completeReportVendor,
   varianceReportVendor,
+  materialReportCustomer,
 } from './helper'
 
 const { authURI, PORT, EPOD_API_URI } = process.env
@@ -252,6 +253,7 @@ const serverContext = async (session) => {
       varianceReportCustomer,
       completeReportVendor,
       varianceReportVendor,
+      materialReportCustomer,
     },
   }
 }

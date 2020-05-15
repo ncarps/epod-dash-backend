@@ -215,11 +215,7 @@ const reportResolver = {
     },
 
     allCustomerReport: async (parent, { dateFrom, dateTo }, context, info) => {
-      const {
-        completeReportCustomer,
-        varianceReportCustomer,
-        fetchDelivery,
-      } = context
+      const { materialReportCustomer, fetchDelivery } = context
 
       const fetchData: any = await fetchDelivery()
       let deliveries: any = fetchData.allDeliverys
@@ -232,39 +228,42 @@ const reportResolver = {
         })
       }
 
-      const customer: any = []
-      const map = new Map()
-      for (const item of deliveries) {
-        if (!map.has(item.customer.name)) {
-          map.set(item.customer.name, true)
-          customer.push(item.customer.name)
-        }
-      }
-      const customerId = (name) => {
-        return deliveries.filter((x) => {
-          if (x.customer.name == name) {
-            return x.customer.id
-          }
-        })
-      }
-      const completeReport = await completeReportCustomer(customer, deliveries)
-      const varianceReport = await varianceReportCustomer(customer, deliveries)
-      console.log('Customer', varianceReport)
-      return completeReport.map((r: any, index) => {
-        const id = customerId(r.customer)[0].customer.id
+      const materialReport: Array<{
+        id: String
+        customer: string
+        totalReceived: Number
+        totalVariance: Number
+        shipment: String
+      }> = await materialReportCustomer(deliveries)
+      console.log(materialReport)
+      return materialReport.map((mr) => ({
+        id: mr.id,
+        shipment: mr.shipment,
+        customer: mr.customer,
+        delivery: mr.id,
+        materialReport: {
+          id: mr.id,
+          totalReceived: mr.totalReceived,
+          totalVariance: mr.totalVariance,
+        },
+      }))
+      // const varianceReport = await varianceReportCustomer(customer, deliveries)
+      // console.log('Customer', varianceReport)
+      // return completeReport.map((r: any, index) => {
+      //   const id = customerId(r.customer)[0].customer.id
 
-        return {
-          customer: r.customer,
-          completeReport: {
-            completed: r.completed,
-            pending: r.pending,
-            id: r.customer,
-            delivery: r.delivery,
-          },
-          varianceReport: varianceReport[index],
-          id: id,
-        }
-      })
+      //   return {
+      //     customer: r.customer,
+      //     completeReport: {
+      //       completed: r.completed,
+      //       pending: r.pending,
+      //       id: r.customer,
+      //       delivery: r.delivery,
+      //     },
+      //     varianceReport: varianceReport[index],
+      //     id: id,
+      //   }
+      // })
     },
 
     allDeliverys: async (parent, args, { fetchDelivery }, info) => {
