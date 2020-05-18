@@ -216,7 +216,7 @@ const reportResolver = {
 
     allCustomerReport: async (parent, { dateFrom, dateTo }, context, info) => {
       const {
-        completeReportCustomer,
+        materialReportCustomer,
         varianceReportCustomer,
         fetchDelivery,
       } = context
@@ -232,39 +232,52 @@ const reportResolver = {
         })
       }
 
-      const customer: any = []
-      const map = new Map()
-      for (const item of deliveries) {
-        if (!map.has(item.customer.name)) {
-          map.set(item.customer.name, true)
-          customer.push(item.customer.name)
-        }
-      }
-      const customerId = (name) => {
-        return deliveries.filter((x) => {
-          if (x.customer.name == name) {
-            return x.customer.id
-          }
-        })
-      }
-      const completeReport = await completeReportCustomer(customer, deliveries)
-      const varianceReport = await varianceReportCustomer(customer, deliveries)
-      console.log('Customer', varianceReport)
-      return completeReport.map((r: any, index) => {
-        const id = customerId(r.customer)[0].customer.id
+      const materialReport: Array<{
+        id: String
+        customer: string
+        totalReceived: Number
+        totalVariance: Number
+        shipment: String
+      }> = await materialReportCustomer(deliveries)
+      console.log(materialReport)
 
-        return {
-          customer: r.customer,
-          completeReport: {
-            completed: r.completed,
-            pending: r.pending,
-            id: r.customer,
-            delivery: r.delivery,
-          },
-          varianceReport: varianceReport[index],
-          id: id,
-        }
-      })
+      const varianceReport = await varianceReportCustomer(deliveries)
+
+      return materialReport.map((mr, index) => ({
+        id: mr.id,
+        shipment: mr.shipment,
+        customer: mr.customer,
+        delivery: mr.id,
+        materialReport: {
+          id: mr.id,
+          totalReceived: mr.totalReceived,
+          totalVariance: mr.totalVariance,
+        },
+        varianceReport: varianceReport[index],
+        noVarianceMaterial: noVarianceMaterialReport(
+          deliveries.filter((d) => d.id === mr.id),
+        ),
+        withVarianceMaterial: withVarianceMaterialReport(
+          deliveries.filter((d) => d.id === mr.id),
+        ),
+      }))
+      // const varianceReport = await varianceReportCustomer(customer, deliveries)
+      // console.log('Customer', varianceReport)
+      // return completeReport.map((r: any, index) => {
+      //   const id = customerId(r.customer)[0].customer.id
+
+      //   return {
+      //     customer: r.customer,
+      //     completeReport: {
+      //       completed: r.completed,
+      //       pending: r.pending,
+      //       id: r.customer,
+      //       delivery: r.delivery,
+      //     },
+      //     varianceReport: varianceReport[index],
+      //     id: id,
+      //   }
+      // })
     },
 
     allDeliverys: async (
@@ -374,4 +387,56 @@ const filterByDateRange = (dateFrom, dateTo, deliveryDate) => {
   }
 
   return false
+}
+
+const noVarianceMaterialReport = (deliveries: any) => {
+  let material: Array<{
+    id: String
+    itemNumber: String
+    material: String
+    uom: String
+    qty: String
+  }> = []
+  deliveries.map((del) => {
+    del.items.map((i) => {
+      if (i.varianceQty === 0) {
+        material.push({
+          id: i.id,
+          itemNumber: i.itemNumber,
+          material: i.material,
+          uom: i.uom,
+          qty: i.qty,
+        })
+      }
+    })
+  })
+  console.log(deliveries)
+  console.log(material)
+  return material
+}
+
+const withVarianceMaterialReport = (deliveries: any) => {
+  let material: Array<{
+    id: String
+    itemNumber: String
+    material: String
+    uom: String
+    qty: String
+  }> = []
+  deliveries.map((del) => {
+    del.items.map((i) => {
+      if (i.varianceQty > 0 || i.varianceQty < 0) {
+        material.push({
+          id: i.id,
+          itemNumber: i.itemNumber,
+          material: i.material,
+          uom: i.uom,
+          qty: i.qty,
+        })
+      }
+    })
+  })
+  console.log(deliveries)
+  console.log(material)
+  return material
 }
