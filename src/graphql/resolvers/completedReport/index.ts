@@ -267,10 +267,24 @@ const reportResolver = {
       })
     },
 
-    allDeliverys: async (parent, args, { fetchDelivery }, info) => {
+    allDeliverys: async (
+      parent,
+      { dateFrom, dateTo },
+      { fetchDelivery },
+      info,
+    ) => {
       const fetchData: any = await fetchDelivery()
-      const deliveries: any = fetchData.allDeliverys
+      let deliveries: any = fetchData.allDeliverys
 
+      if (dateFrom || dateTo) {
+        deliveries = deliveries.filter((del) => {
+          if (filterByDateRange(dateFrom, dateTo, del.scheduledDate)) {
+            return del
+          }
+        })
+      }
+
+      console.log('Deliveries', deliveries)
       return deliveries.map((del) => ({
         customer: del.customer.name,
         driver: del.driver.name,
