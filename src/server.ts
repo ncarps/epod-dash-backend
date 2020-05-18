@@ -15,16 +15,7 @@ import {
 } from 'graphql-tools'
 const cache = new InMemoryCache()
 import fetch from 'cross-fetch'
-import {
-  fetchDelivery,
-  completeReportShipment,
-  varianceReportShipment,
-  completeReportCustomer,
-  varianceReportCustomer,
-  completeReportVendor,
-  varianceReportVendor,
-  materialReportCustomer,
-} from './helper'
+import { fetchDelivery } from './helper'
 
 const { authURI, PORT, EPOD_API_URI } = process.env
 
@@ -247,13 +238,6 @@ const serverContext = async (session) => {
       user,
       fetchDelivery: async () =>
         fetchDelivery(session.req.headers.authorization),
-      completeReportShipment,
-      varianceReportShipment,
-      completeReportCustomer,
-      varianceReportCustomer,
-      completeReportVendor,
-      varianceReportVendor,
-      materialReportCustomer,
     },
   }
 }
