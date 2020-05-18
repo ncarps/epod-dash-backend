@@ -1,7 +1,19 @@
 import { gql } from 'apollo-server'
 
 const fillRateTypDef = gql`
-  type FillRate {
+  type SevenDaysFillRate {
+    id: ID
+    vendor: [VendorFillRate]
+    customer: [CustomerFillRate]
+  }
+
+  type OneMonthFillRate {
+    id: ID
+    vendor: [VendorFillRate]
+    customer: [CustomerFillRate]
+  }
+
+  type OneYearFillRate {
     id: ID
     vendor: [VendorFillRate]
     customer: [CustomerFillRate]
@@ -19,9 +31,9 @@ const fillRateTypDef = gql`
     fillrate: Float
   }
   type Query {
-    sevenDaysFillRate: FillRate
-    oneMonthFillRate: FillRate
-    oneYearFillRate: FillRate
+    sevenDaysFillRate: SevenDaysFillRate
+    oneMonthFillRate: OneMonthFillRate
+    oneYearFillRate: OneYearFillRate
   }
 `
 
