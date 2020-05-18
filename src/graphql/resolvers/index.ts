@@ -1,7 +1,10 @@
-import { mergeResolvers } from "merge-graphql-schemas";
+import { mergeResolvers } from 'merge-graphql-schemas'
 
-import report from "./completedReport";
+import report from './Commons'
+import shipment from './ShipmentReport'
+import customer from './CustomerReport'
+import vendor from './VendorReport'
+import fillrate from './FillRate'
+const resolvers: any[] = [report, shipment, customer, vendor, fillrate]
 
-const resolvers: any[] = [report];
-
-export default mergeResolvers(resolvers);
+export default mergeResolvers(resolvers)
