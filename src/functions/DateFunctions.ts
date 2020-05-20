@@ -69,3 +69,36 @@ export const makeFilterDeliveryByDate = (date, days: number) => {
     return false
   }
 }
+
+export const makeFileterShipmentAge = (date, days: number) => {
+  const inputDate = moment(date).format('LL')
+  const endDate = moment().format('LL')
+  const startDate = moment(endDate)
+    .subtract(days, 'days')
+    .format('LL')
+
+  if (moment(inputDate).isBefore(endDate)) {
+    return true
+  } else {
+    return false
+  }
+}
+
+export const convertDate = (date1, date2) => {
+  const dateOne = moment(date1).format('LL')
+  const dateTwo = moment(date2).format('LL')
+
+  if (moment(dateOne).isAfter(dateOne)) {
+    return 1
+  }
+  if (moment(dateOne).isBefore(dateTwo)) {
+    return -1
+  }
+  return 0
+}
+
+export const getAge = (date1) => {
+  const dateOne = moment(date1).format('LL')
+
+  return moment().diff(dateOne, 'days')
+}

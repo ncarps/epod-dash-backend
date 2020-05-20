@@ -7,8 +7,17 @@ import customer from './CustomerReport'
 import vendor from './VendorReport'
 import fillrate from './FillRate'
 import dashreport from './DashReport'
+import shipmentage from './ShipmentAge'
 
-const typeDefs = [report, shipment, customer, vendor, fillrate, dashreport]
+const typeDefs = [
+  report,
+  shipment,
+  customer,
+  vendor,
+  fillrate,
+  dashreport,
+  shipmentage,
+]
 
 // NOTE: 2nd param is optional, and defaults to false
 // Only use if you have defined the same type multiple times in
