@@ -6,7 +6,7 @@ import customer from './CustomerReport'
 import vendor from './VendorReport'
 import fillrate from './FillRate'
 import dashreport from './DashReport'
-
+import userInfo from './UserInfo'
 const resolvers: any[] = [
   report,
   shipment,
@@ -14,6 +14,7 @@ const resolvers: any[] = [
   vendor,
   fillrate,
   dashreport,
+  userInfo,
 ]
 
 export default mergeResolvers(resolvers)
