@@ -8,6 +8,7 @@ import vendor from './VendorReport'
 import fillrate from './FillRate'
 import dashreport from './DashReport'
 import userInfo from './UserInfo'
+import shipmentage from './ShipmentAge'
 
 const typeDefs = [
   report,
@@ -17,6 +18,7 @@ const typeDefs = [
   fillrate,
   dashreport,
   userInfo,
+  shipmentage,
 ]
 
 // NOTE: 2nd param is optional, and defaults to false

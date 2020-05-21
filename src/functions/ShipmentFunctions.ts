@@ -1,4 +1,5 @@
 import moment from 'moment'
+import { convertDate, getAge } from './DateFunctions'
 
 export const completeReportShipment = (
   shipmentNumber: Array<String>,
@@ -101,5 +102,28 @@ export const varianceReportShipment = (
           items,
         }
       })
+  })
+}
+
+export const getAgeShipment = (
+  shipmentNumber: Array<String>,
+  deliveries: any,
+) => {
+  return shipmentNumber.map((shipment) => {
+    const sortedDeliveries = deliveries
+      .filter((del: any) => del.shipmentNumber === shipment)
+      .sort((a, b) => {
+        return convertDate(a.scheduledDate, b.scheduledDate)
+      })
+    return {
+      id: shipment,
+      shipmentNumber: shipment,
+      customer: sortedDeliveries.filter(
+        (del) => del.delvStatus === 'Pending',
+      )[0].customer.name,
+      vendor: sortedDeliveries.filter((del) => del.delvStatus === 'Pending')[0]
+        .trucker,
+      age: getAge(sortedDeliveries[0].scheduledDate),
+    }
   })
 }
