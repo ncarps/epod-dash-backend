@@ -4,7 +4,6 @@ const userInfoResolver = {
       const { user } = context
 
       return {
-        id: user.username,
         username: user.username,
         fullname: user.username,
       }
