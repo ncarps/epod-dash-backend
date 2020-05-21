@@ -6,6 +6,7 @@ import customer from './CustomerReport'
 import vendor from './VendorReport'
 import fillrate from './FillRate'
 import dashreport from './DashReport'
+import userInfo from './UserInfo'
 import shipmentdate from './ShipmentAge'
 
 const resolvers: any[] = [
@@ -15,6 +16,7 @@ const resolvers: any[] = [
   vendor,
   fillrate,
   dashreport,
+  userInfo,
   shipmentdate,
 ]
 
