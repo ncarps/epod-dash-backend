@@ -26,7 +26,8 @@ export const completeReportVendor = (trucker: any, deliveries: any) => {
 
     const shipmentNumber: Array<String> = []
     const map = new Map()
-    for (const item of deliveries) {
+    const deliveryPerTrucker = deliveries.filter((del) => del.trucker == t)
+    for (const item of deliveryPerTrucker) {
       if (!map.has(item.shipmentNumber)) {
         map.set(item.shipmentNumber, true)
         shipmentNumber.push(item.shipmentNumber)
