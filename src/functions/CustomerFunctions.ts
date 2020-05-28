@@ -80,13 +80,11 @@ export const withVarianceMaterialReport = (deliveries: any) => {
 }
 
 export const materialReportCustomer = (deliveries: any) => {
-  let totalVariance = 0
-  let totalQuantity = 0
-
   return deliveries
     .filter((del) => del.delvStatus === 'Complete')
     .map((d) => {
-      console.log(d.id)
+      let totalVariance = 0
+      let totalQuantity = 0
       d.items.map((i) => {
         totalVariance = totalVariance + parseFloat(i.varianceQty)
         totalQuantity = totalQuantity + parseFloat(i.qty)
