@@ -8,6 +8,7 @@ import fillrate from './FillRate'
 import dashreport from './DashReport'
 import userInfo from './UserInfo'
 import shipmentdate from './ShipmentAge'
+import driver from './Driver'
 
 const resolvers: any[] = [
   report,
@@ -18,6 +19,7 @@ const resolvers: any[] = [
   dashreport,
   userInfo,
   shipmentdate,
+  driver,
 ]
 
 export default mergeResolvers(resolvers)
