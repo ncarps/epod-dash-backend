@@ -37,6 +37,9 @@ const customerTypeDef = gql`
     scheduledTime: String
     shipmentNumber: String
     trucker: String
+    plateNumber: String
+    helper: String
+    fullAddress: String
   }
 
   type Item {

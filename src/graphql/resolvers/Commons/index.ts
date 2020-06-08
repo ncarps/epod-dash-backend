@@ -298,6 +298,9 @@ const reportResolver = {
         scheduledTime: del.scheduledTime,
         shipmentNumber: del.shipmentNumber,
         trucker: del.trucker,
+        plateNumber: del.driver.plateNumber,
+        helper: del.driver.porter,
+        fullAddress: del.customer.address.fullAddress,
       }))
     },
     loginAuth: async (parent, { userBase }, context, info) => {

@@ -34,14 +34,12 @@ export const fetchDelivery = async (header) => {
             pricePerUnit
             uom
             qty
-
             pricePerUnit
             variance {
               id
               varianceQty
               reasonOfVariance
             }
-
             deliveryDateAndTime
           }
           customer {
@@ -49,6 +47,7 @@ export const fetchDelivery = async (header) => {
             name
             address {
               id
+              fullAddress
               building_name
               street
               city

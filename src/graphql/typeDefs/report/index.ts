@@ -87,6 +87,9 @@ const reportTypeDef = gql`
     id: ID
     customer: String
     driver: String
+    plateNumber: String
+    helper: String
+    fullAddress: String
     file: [String]
     items: [Item]
     deliveryStatus: String
