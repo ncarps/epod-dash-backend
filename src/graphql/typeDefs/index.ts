@@ -9,6 +9,7 @@ import fillrate from './FillRate'
 import dashreport from './DashReport'
 import userInfo from './UserInfo'
 import shipmentage from './ShipmentAge'
+import DriverLocation from './DriverLocation'
 
 const typeDefs = [
   report,
@@ -19,6 +20,7 @@ const typeDefs = [
   dashreport,
   userInfo,
   shipmentage,
+  DriverLocation,
 ]
 
 // NOTE: 2nd param is optional, and defaults to false
