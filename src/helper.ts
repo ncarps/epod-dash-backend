@@ -134,3 +134,38 @@ export const fetchDriver = async (header) => {
     .catch((error) => error)
   return result.data || result.error
 }
+
+export const fetchDriverLocation = async (header) => {
+  const uri = EPOD_API_URI || 'http://localhost:4000/graphql'
+  const link = new HttpLink({ uri })
+  const operation = {
+    query: gql`
+      query {
+        getDriverLocations {
+          id
+          timeStamp
+          driverId
+          latitude
+          longitude
+          mobileTimeStamp
+          mobileMocked
+          textAddress
+        }
+      }
+    `,
+    variables: {},
+    context: {
+      headers: {
+        //Den auth
+        Authorization: header,
+        //Mark auth
+        //Authorization: "Basic bWFyazoxMjM=",
+      },
+    },
+  }
+
+  const result: any = await makePromise(execute(link, operation))
+    .then((data) => data)
+    .catch((error) => error)
+  return result.data || result.error
+}

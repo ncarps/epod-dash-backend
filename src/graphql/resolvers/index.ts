@@ -8,6 +8,7 @@ import fillrate from './FillRate'
 import dashreport from './DashReport'
 import userInfo from './UserInfo'
 import shipmentdate from './ShipmentAge'
+import DriverLocation from './DriverLocation'
 import driver from './Driver'
 
 const resolvers: any[] = [
@@ -19,6 +20,7 @@ const resolvers: any[] = [
   dashreport,
   userInfo,
   shipmentdate,
+  DriverLocation,
   driver,
 ]
 
