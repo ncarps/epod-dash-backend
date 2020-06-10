@@ -62,6 +62,8 @@ export const makeFillRate = (deliveries: any, range: string) => {
 
   vendor = topVendor.concat(bottomVendor)
   customer = topCustomer.concat(bottomCustomer)
+  vendor = [...new Set(vendor)]
+  customer = [...new Set(customer)]
   return {
     vendor,
     customer,
@@ -72,7 +74,7 @@ const getTopVendor = (vendorFillrate: Array<VendorFillRate>) => {
   const fillrate = vendorFillrate.sort((a, b) => b.fillrate - a.fillrate)
   const newFillRate = fillrate
   let length = fillrate.length / 2
-  length = Math.round(length)
+  length = parseInt(length.toString())
 
   if (length < 5) {
     return newFillRate.filter((f, i) => i < length)
@@ -98,7 +100,7 @@ const getTopCustomer = (customerFillRate: Array<CustomerFillRate>) => {
   const fillrate = customerFillRate.sort((a, b) => b.fillrate - a.fillrate)
   const newFillRate = fillrate
   let length = fillrate.length / 2
-  length = Math.round(length)
+  length = parseInt(length.toString())
 
   if (length < 5) {
     return newFillRate.filter((f, i) => i < length)

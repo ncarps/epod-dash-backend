@@ -10,6 +10,7 @@ import dashreport from './DashReport'
 import userInfo from './UserInfo'
 import shipmentage from './ShipmentAge'
 import DriverLocation from './DriverLocation'
+import driver from './Driver'
 
 const typeDefs = [
   report,
@@ -21,6 +22,7 @@ const typeDefs = [
   userInfo,
   shipmentage,
   DriverLocation,
+  driver,
 ]
 
 // NOTE: 2nd param is optional, and defaults to false

@@ -34,9 +34,14 @@ export const fetchDelivery = async (header) => {
             pricePerUnit
             uom
             qty
-            varianceQty
+
             pricePerUnit
-            reasonOfVariance
+            variance {
+              id
+              varianceQty
+              reasonOfVariance
+            }
+
             deliveryDateAndTime
           }
           customer {
@@ -58,6 +63,58 @@ export const fetchDelivery = async (header) => {
             path
           }
           trucker
+        }
+      }
+    `,
+    variables: {},
+    context: {
+      headers: {
+        //Den auth
+        Authorization: header,
+        //Mark auth
+        //Authorization: "Basic bWFyazoxMjM=",
+      },
+    },
+  }
+
+  const result: any = await makePromise(execute(link, operation))
+    .then((data) => data)
+    .catch((error) => error)
+  if (result.data) {
+    const deliverys = result.data.allDeliverys.map((d) => {
+      const items = d.items.map((i) => {
+        let totalVariance: number = 0
+        const reasonOfVariance =
+          i.variance.length > 0 ? i.variance[0].reasonOfVariance : ''
+        i.variance.map((v) => {
+          totalVariance = v.varianceQty + totalVariance
+          console.log('reason', v.reasonOfVariance)
+        })
+        console.log('Total Variance', totalVariance)
+
+        return { ...i, reasonOfVariance, varianceQty: totalVariance }
+      })
+
+      return { ...d, items }
+    })
+
+    return { allDeliverys: deliverys }
+  }
+
+  return result.error
+}
+
+export const fetchDriver = async (header) => {
+  const uri = EPOD_API_URI || 'http://localhost:4000/graphql'
+  const link = new HttpLink({ uri })
+  const operation = {
+    query: gql`
+      query {
+        allDrivers {
+          id
+          name
+          plateNumber
+          porter
         }
       }
     `,

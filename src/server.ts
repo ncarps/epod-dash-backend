@@ -15,7 +15,7 @@ import {
 } from 'graphql-tools'
 const cache = new InMemoryCache()
 import fetch from 'cross-fetch'
-import { fetchDelivery, fetchDriverLocation } from './helper'
+import { fetchDelivery, fetchDriverLocation, fetchDriver } from './helper'
 
 const { authURI, PORT, EPOD_API_URI } = process.env
 
@@ -240,6 +240,7 @@ const serverContext = async (session) => {
         fetchDelivery(session.req.headers.authorization),
       fetchDriverLocation: async () =>
         fetchDriverLocation(session.req.headers.authorization),
+      fetchDriver: async () => fetchDriver(session.req.headers.authorization),
     },
   }
 }
