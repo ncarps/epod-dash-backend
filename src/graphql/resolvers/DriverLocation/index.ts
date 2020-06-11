@@ -4,6 +4,9 @@ const driverLocationResolvers = {
       const { fetchDriverLocation } = context
       const fetchLocation: any = await fetchDriverLocation()
       const driverLocations = fetchLocation.getDriverLocations
+      if (driverLocations === null) {
+        return {}
+      }
       const filteredLoc = driverLocations.filter(
         (loc) => (loc.driverId = driverId),
       )
