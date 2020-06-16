@@ -7,6 +7,10 @@ const driverResolvers = {
       const fetchLocation: any = await fetchDriverLocation()
       const driverLocations = fetchLocation.getDriverLocations
 
+      if (driverLocations === null) {
+        return {}
+      }
+
       const functionzx = (driverId) => {
         const filteredLoc = driverLocations.filter(
           (loc) => (loc.driverId = driverId),
@@ -29,6 +33,10 @@ const driverResolvers = {
       let driver: any = fetchData.allDrivers
       const fetchLocation: any = await fetchDriverLocation()
       const driverLocations = fetchLocation.getDriverLocations
+
+      if (driverLocations === null) {
+        return {}
+      }
 
       const filteredDriver = driver.find((driv) => driv.id === driverId)
 
